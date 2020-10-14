@@ -6,7 +6,7 @@ import * as ROUTES from '../../constants/routes';
 const landing = () => {
 
     return (  
-    <div style={{marginLeft: '750px' }}>
+    <div style={{marginLeft: '300px' }}>
     <div style={{ color: '#1d211f' }} >
 
     <img src={AppIcon} alt="vibehuticon"/>

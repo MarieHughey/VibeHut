@@ -5,7 +5,7 @@ import AppIcon from '../../images/addsong-logo.png';
 const addnew = () => {
 
     return (
-    <div style={{marginLeft:'750px'}}>
+    <div style={{marginLeft:'300px'}}>
         <br></br>
         <br></br>
         <img src={AppIcon} alt="addsongicon"/>
