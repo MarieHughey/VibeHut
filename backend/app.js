@@ -39,4 +39,49 @@ app.get("/getSongs", (req, res) => {
     });
 });
 
+// query to search for a specific song
+app.get("/getMatchingSongs", (req, res) => {
+    var toMatch = req.query.toMatch;
+    var querystring = "SELECT * FROM songs WHERE song_title LIKE '%" + toMatch + "%'";
+    console.log(querystring);
+    let songmatchquery = querystring;
+    connection.query(songmatchquery, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
+// query to search for a specific book
+app.get("/getMatchingBooks", (req, res) => {
+    var toMatch = req.query.toMatch;
+    var querystring = "SELECT * FROM books WHERE book_title LIKE '%" + toMatch + "%'";
+    console.log(querystring);
+    let songmatchquery = querystring;
+    connection.query(songmatchquery, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
+// query to search for a specific movie
+app.get("/getMatchingMovies", (req, res) => {
+    var toMatch = req.query.toMatch;
+    var querystring = "SELECT * FROM movies WHERE movie_title LIKE '%" + toMatch + "%'";
+    console.log(querystring);
+    let songmatchquery = querystring;
+    connection.query(songmatchquery, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
 app.listen(port, () => console.log(`app listening on port ${port}`));
