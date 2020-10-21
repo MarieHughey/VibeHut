@@ -12,7 +12,7 @@ export default class Songs extends Component {
 
     handleButtonClick = () => {
         axios.get("/getSongs").then(response => {
-            const listItems = response.data.map((d) => <li key={d.song_title}>{d.song_title} <i>by {d.song_artist} </i></li>);
+            const listItems = response.data.map((d) => <li key={d.song_title}>{d.song_title} <i>by {d.artist} </i></li>);
             this.setState({
                 songs: listItems
             });
