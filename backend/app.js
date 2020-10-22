@@ -1,4 +1,5 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const app = express();
 const port = 5000;
 
@@ -13,6 +14,9 @@ let connection = mysql.createConnection({
 
 var cors = require('cors');
 app.use(cors());
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 // test connection to database
 /*
@@ -31,6 +35,34 @@ app.get("/test", (req, res) => res.send("testing backend"));
 app.get("/getSongs", (req, res) => {
     let songquery = `SELECT * FROM songs`;
     connection.query(songquery, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
+// query to return all moods
+app.get("/getMoods", (req, res) => {
+    let moodquery = `SELECT * FROM moods`;
+    connection.query(moodquery, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
+// query to see if exact song exists in database
+app.get("/checkSongExists", (req, res) => {
+    var songtitle = req.query.songtitle;
+    var artist = req.query.artist;
+    var querystring = "SELECT * FROM songs WHERE song_title='" + songtitle + "' AND artist='" + artist + "'";
+    console.log(querystring);
+    let songmatchquery = querystring;
+    connection.query(songmatchquery, (error, results, fields) => {
         if (error) {
             return console.error(error.message);
         }
@@ -112,5 +144,62 @@ app.get("/getPlaylistForBook", (req, res) => {
         res.send(results);
     });
 });
+
+// query to add a song
+app.post('/addSong',(req, res) => {
+    var song_title = req.body.songtitle;
+    var artist = req.body.artist;
+    var album_name = req.body.albumname;
+    var song_id = req.body.songid;
+    console.log(req.body);
+    var querystring = "INSERT INTO songs (song_id, song_title, artist, album_name) VALUES (" + song_id + ", '" + song_title + "', '" + artist + "', '" + album_name + "')";
+    connection.query(  querystring, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+    });
+    res.end("added song");
+});
+
+// query to add song moods
+app.post('/addSongMoods', (req, res) => {
+    var song_id = req.body.songid;
+    var mood_id_list = req.body.moodidlist;
+
+    console.log(song_id);
+    console.log(mood_id_list);
+
+    for (let i = 0; i < mood_id_list.length; i++) {
+        console.log(mood_id_list[i]);
+        var querystring = "INSERT INTO songmoods (song_id, mood_id) VALUES (" + song_id + ", " + mood_id_list[i] + ")";
+        connection.query(  querystring, (error, results, fields) => {
+            if (error) {
+                return console.error(error.message);
+            }
+            console.log(results);
+        });
+    }
+    res.end("added song moods");
+})
+
+// query to get mood id from mood name
+app.get('/getMoodIds', (req, res) => {
+    var mood_names = req.query.moodnames;
+
+    console.log(mood_names);
+    var querystring = "SELECT mood_id FROM moods WHERE mood_name='" + mood_names[0] + "'";
+    for (let i = 1; i < mood_names.length; i++) {
+        querystring += " OR mood_name='" + mood_names[i] + "'";
+    }
+    console.log(querystring);
+    connection.query(  querystring, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+})
 
 app.listen(port, () => console.log(`app listening on port ${port}`));

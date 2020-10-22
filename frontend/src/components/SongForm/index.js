@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import * as ROUTES from '../../constants/routes';
+import AddSong from './songform';
 
 const landing = () => {
 
@@ -14,8 +15,7 @@ const landing = () => {
 
     <h2>Enter Song Info</h2>
 
-    <br></br>
-    <br></br>
+    <AddSong/>
     <br></br>
 
     </div>
