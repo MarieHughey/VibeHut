@@ -5,6 +5,7 @@ import AddNew from '../AddNew';
 import Landing from '../Landing';
 import GeneratePlaylist from '../GeneratePlaylist'
 import Recommendations from '../Recommendations'
+import SongForm from '../SongForm'
 
 const App = () => (
   <Router>
@@ -13,6 +14,7 @@ const App = () => (
     <Route path={ROUTES.ADD_NEW} component={AddNew} />
     <Route path={ROUTES.GENERATE_PLAYLIST} component={GeneratePlaylist} />
     <Route path={ROUTES.RECOMMENDATIONS} component={Recommendations} />
+    <Route path={ROUTES.SONGFORM} component={SongForm} />
     </div>
   </Router>
   

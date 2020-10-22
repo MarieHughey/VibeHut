@@ -9,17 +9,49 @@ class MakeSearch extends Component {
       this.state = {
           searchString:'',
           matchedMovies:'',
+          matchedMovieIds:'',
           matchedBooks:'',
+          matchedBookIds:'',
+          playlistSongs:'',
+          gotPlaylist: false,
           didRequest: false
       };
       
       this.keyPressUser = this.keyPressUser.bind(this);
+      this.movieItemPress = this.movieItemPress.bind(this);
+      this.bookItemPress = this.bookItemPress.bind(this);
     }
 
     
     handleChange = (event) => {
         this.setState({ 
             searchString: event.target.value 
+        });
+    }
+
+    movieItemPress(e){
+        console.log("clicked movie: " + e.currentTarget.id);
+        axios.get("/getPlaylistForMovie", { params: {movieId: e.currentTarget.id}}).then(response => {
+          const listItems = response.data.map((d) => <li key={d.song_title}>{d.song_title} <i>by {d.artist} </i></li>);
+            this.setState({
+                playlistSongs: listItems
+          });
+        });
+        this.setState({
+          gotPlaylist: true
+        });
+    }
+
+    bookItemPress(e){
+        console.log("clicked book: " + e.currentTarget.id);
+        axios.get("/getPlaylistForBook", { params: {bookId: e.currentTarget.id}}).then(response => {
+          const listItems = response.data.map((d) => <li key={d.song_title}>{d.song_title} <i>by {d.artist} </i></li>);
+            this.setState({
+                playlistSongs: listItems
+          });
+        });
+        this.setState({
+          gotPlaylist: true
         });
     }
 
@@ -34,17 +66,21 @@ class MakeSearch extends Component {
 
         // search the database for the book title
         axios.get("/getMatchingBooks", { params: {toMatch: searchval}}).then(response => {
-          const listItems = response.data.map((d) => <li key={d.book_title}>{d.book_title} <i>by {d.author} </i></li>);
+          const listItems = response.data.map((d) => <li style={{listStyle: "none"}} key={d.book_title}>{d.book_title} <i>by {d.author} </i></li>);
+          const bookIds = response.data.map((d) => <li key={d.book_id}>{d.book_id}</li>);
           this.setState({
-              matchedBooks: listItems
+              matchedBooks: listItems,
+              matchedBookIds: bookIds
           });
         });
 
         // search the database for the movie title
         axios.get("/getMatchingMovies", { params: {toMatch: searchval}}).then(response => {
-          const listItems = response.data.map((d) => <li key={d.movie_title}>{d.movie_title} <i>     ({d.year_released})</i></li>);
+          const listItems = response.data.map((d) => <li style={{listStyle: "none"}} key={d.movie_title}>{d.movie_title} <i>     ({d.year_released})</i></li>);
+          const movieIds = response.data.map((d) => <li key={d.movie_id}>{d.movie_id}</li>);
           this.setState({
-              matchedMovies: listItems
+              matchedMovies: listItems,
+              matchedMovieIds: movieIds
           });
       });
     }
@@ -58,6 +94,36 @@ class MakeSearch extends Component {
         movieresults = <h4>Matching Movies:</h4>;
         bookresults = <h4>Matching Books:</h4>;
       }
+
+      let playlistresults;
+      
+      if (this.state.gotPlaylist) {
+        playlistresults = <h3>Playlist Results:</h3>
+      }
+
+      var movieButtons = [];
+      var bookButtons = [];
+      
+      if (this.state.matchedMovieIds.length > 0) {
+        for(let i = 0; i < this.state.matchedMovies.length; i++)
+        {
+            var movieid = this.state.matchedMovieIds[i].key;
+            var button = <button onClick={this.movieItemPress} key={movieid} id={movieid}> {this.state.matchedMovies[i]}</button>
+            movieButtons.push(button);
+    
+        }
+      }
+
+      
+      if (this.state.matchedBookIds.length > 0) {
+        for(let i = 0; i < this.state.matchedBooks.length; i++)
+        {
+            var bookid = this.state.matchedBookIds[i].key;
+            var button = <button onClick={this.bookItemPress} key={bookid} id={bookid}> {this.state.matchedBooks[i]} </button>
+            bookButtons.push(button);
+        }
+      }
+      
       
       return (
        
@@ -84,13 +150,15 @@ class MakeSearch extends Component {
         <br></br>
         
         {movieresults}
-        <p>{this.state.matchedMovies}</p>
-
-        <br></br>
-        <br></br>
+        <p>{movieButtons}</p>
 
         {bookresults}
-        <p>{this.state.matchedBooks}</p>
+        <p>{bookButtons}</p>
+
+        <br></br>
+
+        {playlistresults}
+        <p>{this.state.playlistSongs}</p>
 
         <div id="errorMessage"></div>
 

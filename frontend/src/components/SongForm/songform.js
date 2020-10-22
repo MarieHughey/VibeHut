@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
 import * as ROUTES from '../../constants/routes';
 import axios from "axios";
-import { Link, withRouter } from 'react-router-dom';
 axios.defaults.baseURL = "http://localhost:5000";
+import { Link, withRouter } from 'react-router-dom';
 
-class MakeSearchSong extends Component {
+class AddSong extends Component {
     constructor(props){
       super(props);
       this.state = {
-          searchString:'',
-          matchedSongs:''
+          searchString:''
       };
       
       this.keyPressUser = this.keyPressUser.bind(this);
