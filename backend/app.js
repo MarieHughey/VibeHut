@@ -145,6 +145,63 @@ app.get("/getPlaylistForBook", (req, res) => {
     });
 });
 
+//Code added by Aditya
+// query to get book recommendations for searched book
+app.get("/getBooksForBook", (req, res) => {
+    var bookId = req.query.bookId;
+    var querystring = "SELECT DISTINCT b.book_title FROM books b JOIN bookmoods bm ON b.book_id=bm.book_id WHERE b.mood_id=" + moodId;
+    let playlistquery = querystring;
+    connection.query(playlistquery, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
+// query to get book recommendations for searched movie
+app.get("/getBooksForMovie", (req, res) => {
+    var bookId = req.query.bookId;
+    var querystring = "SELECT DISTINCT b.book_title FROM books b JOIN moviemoods mm ON b.book_moods=mm.book_moods WHERE mm.mood_id=" + moodId;
+    let playlistquery = querystring;
+    connection.query(playlistquery, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
+// query to get movie recommendations for searched book
+app.get("/getMoviesForBook", (req, res) => {
+    var bookId = req.query.bookId;
+    var querystring = "SELECT DISTINCT mm.movie_title FROM books b JOIN bookmoods bm ON b.book_id=bm.book_id WHERE b.mood_id=" + moodId;
+    let playlistquery = querystring;
+    connection.query(playlistquery, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
+// query to get movie recommendations for searched movie
+app.get("/getMoviesForMovie", (req, res) => {
+    var movieId = req.query.movieId;
+    var querystring = "SELECT DISTINCT mm.movie_title FROM movies m JOIN moviemoods mm ON b.book_id=bm.book_id WHERE mm.mood_id=" + moodId;
+    let playlistquery = querystring;
+    connection.query(playlistquery, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
 // query to add a song
 app.post('/addSong',(req, res) => {
     var song_title = req.body.songtitle;
