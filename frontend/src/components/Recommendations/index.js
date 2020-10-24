@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import AppIcon from '../../images/recommend-logo.png';
+import MakeSearch from './search.js';
 
 const recommendations = () => {
 
@@ -13,8 +14,9 @@ const recommendations = () => {
 
         <h1>Get Recommendations</h1>
         <br></br>
-        <p>here there will be a search bars users can type a movie or book into</p>
-        <p>then use mysql database to output query of similar titles for recommendations</p>
+        <MakeSearch/>
+        <br></br>
+        <br></br>
        
     </div>
     );

@@ -16,6 +16,8 @@ const generateplaylist = () => {
         <h1>Generate Playlist</h1>
         <br></br>
         <MakeSearch/>
+        <br></br>
+        <br></br>
        
     </div>
     );
