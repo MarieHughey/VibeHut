@@ -3,7 +3,7 @@ import { Link, withRouter } from 'react-router-dom';
 import * as ROUTES from '../../constants/routes';
 import AddSong from './songform';
 
-const landing = () => {
+const songform = () => {
 
     return (  
     <div style={{marginLeft: '300px' }}>
@@ -23,4 +23,4 @@ const landing = () => {
     );
   }
 
-  export default landing;
+  export default songform;

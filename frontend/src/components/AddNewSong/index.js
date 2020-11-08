@@ -4,7 +4,7 @@ import AppIcon from '../../images/addsong-logo.png';
 import MakeSearchSong from './search';
 import Songs from './songs';
 
-const addnew = () => {
+const addnewsong = () => {
 
     return (
     <div style={{marginLeft:'300px'}}>
@@ -23,4 +23,4 @@ const addnew = () => {
     );
   }
   
-  export default addnew;
+  export default addnewsong;

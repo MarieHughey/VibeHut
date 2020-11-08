@@ -189,7 +189,7 @@ class AddSong extends Component {
                     }).then(response => {
                         console.log("added song moods");
                         // go back to non-form page
-                        window.location.href = ROUTES.ADD_NEW;
+                        window.location.href = ROUTES.ADD_NEW_SONG;
                     })
                 });
             });
