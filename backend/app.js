@@ -15,7 +15,7 @@ let connection = mysql.createConnection({
 var cors = require('cors');
 app.use(cors());
 
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // test connection to database
@@ -29,7 +29,68 @@ connection.connect(function(err) {
   });
 */
 
-app.get("/test", (req, res) => res.send("testing backend"));
+//app.get("/test", (req, res) => res.send("testing backend"));
+
+// query to create a user account
+app.post('/createAccount',(req, res) => {
+    var username = req.body.username;
+    var email = req.body.email;
+    var password = req.body.password;
+    var userId = req.body.userId;
+    console.log(req.body);
+    var querystring = "INSERT INTO users (userId, username, email, password, isAdmin) VALUES (" + userId + ", '" + username + "', '" + email + "', '" + password + "', 0)";
+    connection.query(  querystring, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+    });
+    res.end("added user");
+});
+
+// query to return all users
+app.get("/getUsers", (req, res) => {
+    let userquery = `SELECT * FROM users`;
+    connection.query(userquery, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
+// query to see if exact user exists in database
+app.get("/checkUserExists", (req, res) => {
+    var username = req.query.username;
+    var querystring = "SELECT * FROM users WHERE username='" + username + "'";
+    console.log(querystring);
+    let usermatchquery = querystring;
+    connection.query(usermatchquery, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
+// query to log user in database
+app.get("/login", (req, res) => {
+    var username = req.query.username;
+    var password = req.query.password;
+    var querystring = "SELECT * FROM users WHERE username='" + username + "' AND password='" + password + "'";
+    console.log(querystring);
+    let usermatchquery = querystring;
+    connection.query(usermatchquery, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
 
 // test query to return all songs
 app.get("/getSongs", (req, res) => {

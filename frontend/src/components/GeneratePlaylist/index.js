@@ -5,6 +5,9 @@ import MakeSearch from './search';
 
 const generateplaylist = () => {
 
+    console.log(localStorage.getItem('currUser'));
+    console.log(localStorage.getItem('currId'));
+
     return (  
     
     <div style={{marginLeft:'300px'}}>

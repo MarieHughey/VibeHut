@@ -10,17 +10,31 @@ import Login from '../Login';
 import CreateAccount from '../CreateAccount';
 import UserDashboard from '../UserDashboard';
 
+/*
+function requireAuth(nextState, replace, next) {
+  if (!authenticated) {
+    replace({
+      pathname: "/login",
+      state: {nextPathname: nextState.location.pathname}
+    });
+  }
+  next();
+}
+*/
+function requireAuth() {
+
+};
 
 const App = () => (
   <Router>
     <div>
     <Route exact path={ROUTES.LANDING} component={Landing} />
-    <Route path={ROUTES.ADD_NEW_SONG} component={AddNewSong} />
-    <Route path={ROUTES.GENERATE_PLAYLIST} component={GeneratePlaylist} />
-    <Route path={ROUTES.RECOMMENDATIONS} component={Recommendations} />
-    <Route path={ROUTES.SONGFORM} component={SongForm} />
+    <Route path={ROUTES.ADD_NEW_SONG} component={AddNewSong} onEnter={requireAuth} />
+    <Route path={ROUTES.GENERATE_PLAYLIST} component={GeneratePlaylist} onEnter={requireAuth} />
+    <Route path={ROUTES.RECOMMENDATIONS} component={Recommendations} onEnter={requireAuth} />
+    <Route path={ROUTES.SONGFORM} component={SongForm} onEnter={requireAuth} />
     <Route path={ROUTES.LOGIN} component={Login} />
-    <Route path={ROUTES.USERDASHBOARD} component={UserDashboard} />
+    <Route path={ROUTES.USERDASHBOARD} component={UserDashboard} onEnter={requireAuth} />
     <Route path={ROUTES.CREATEACCOUNT} component={CreateAccount} /> 
     </div>
   </Router>

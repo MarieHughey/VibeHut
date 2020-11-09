@@ -5,6 +5,9 @@ import * as ROUTES from '../../constants/routes';
 
 const userdashboard = () => {
 
+    console.log(localStorage.getItem('currUser'));
+    console.log(localStorage.getItem('currId'));
+
     return (  
     <div style={{marginLeft: '300px' }}>
     <div style={{ color: '#1d211f' }} >

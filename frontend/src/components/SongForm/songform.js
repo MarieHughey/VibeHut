@@ -151,7 +151,8 @@ class AddSong extends Component {
             console.log(listItems.length);
             if (listItems.length == 0) {
                 songExists = true;
-                //window.location.href = ROUTES.ADD_NEW;
+                window.location.href = ROUTES.ADD_NEW_SONG;
+                return;
             }
 
             // later maybe add something to tell the user the song was already there

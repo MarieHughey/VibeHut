@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import AppIcon from '../../images/login-logo.png';
 import * as ROUTES from '../../constants/routes';
+import LoginForm from './loginform.js';
 
 const landing = () => {
 
@@ -15,11 +16,12 @@ const landing = () => {
 
     <br></br>
     <br></br>
-    <br></br>
-    <br></br>
-    <br></br>
 
-    <h2><Link to={ROUTES.USERDASHBOARD}>pretend it worked</Link></h2>
+    <LoginForm />
+
+    <br></br>
+    <br></br>
+    <br></br>
 
     </div>
     </div>
