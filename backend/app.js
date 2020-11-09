@@ -206,11 +206,10 @@ app.get("/getPlaylistForBook", (req, res) => {
     });
 });
 
-//Code added by Aditya
-// query to get book recommendations for searched book
-app.get("/getBooksForBook", (req, res) => {
+// query to get recommended books for book
+app.get("/getRecommendedBooksForBook", (req, res) => {
     var bookId = req.query.bookId;
-    var querystring = "SELECT DISTINCT b.book_title FROM books b JOIN bookmoods bm ON b.book_id=bm.book_id WHERE b.mood_id=" + moodId;
+    var querystring = "SELECT DISTINCT b2.book_title, b2.author FROM books b JOIN bookmoods bm ON b.book_id=bm.book_id JOIN bookmoods bm2 ON bm2.mood_id=bm.mood_id JOIN books b2 ON b2.book_id=bm2.book_id WHERE b.book_id=" + bookId + " AND b2.book_id!=" + bookId;
     let playlistquery = querystring;
     connection.query(playlistquery, (error, results, fields) => {
         if (error) {
@@ -221,10 +220,10 @@ app.get("/getBooksForBook", (req, res) => {
     });
 });
 
-// query to get book recommendations for searched movie
-app.get("/getBooksForMovie", (req, res) => {
+// query to get recommended movies for book
+app.get("/getRecommendedMoviesForBook", (req, res) => {
     var bookId = req.query.bookId;
-    var querystring = "SELECT DISTINCT b.book_title FROM books b JOIN moviemoods mm ON b.book_moods=mm.book_moods WHERE mm.mood_id=" + moodId;
+    var querystring = "SELECT DISTINCT m.movie_title, m.year_released FROM books b JOIN bookmoods bm ON b.book_id=bm.book_id JOIN moviemoods mm ON mm.mood_id=bm.mood_id JOIN movies m ON mm.movie_id=m.movie_id WHERE b.book_id=" + bookId;
     let playlistquery = querystring;
     connection.query(playlistquery, (error, results, fields) => {
         if (error) {
@@ -235,24 +234,10 @@ app.get("/getBooksForMovie", (req, res) => {
     });
 });
 
-// query to get movie recommendations for searched book
-app.get("/getMoviesForBook", (req, res) => {
-    var bookId = req.query.bookId;
-    var querystring = "SELECT DISTINCT mm.movie_title FROM books b JOIN bookmoods bm ON b.book_id=bm.book_id WHERE b.mood_id=" + moodId;
-    let playlistquery = querystring;
-    connection.query(playlistquery, (error, results, fields) => {
-        if (error) {
-            return console.error(error.message);
-        }
-        console.log(results);
-        res.send(results);
-    });
-});
-
-// query to get movie recommendations for searched movie
-app.get("/getMoviesForMovie", (req, res) => {
+// query to get recommended books for movie
+app.get("/getRecommendedBooksForMovie", (req, res) => {
     var movieId = req.query.movieId;
-    var querystring = "SELECT DISTINCT mm.movie_title FROM movies m JOIN moviemoods mm ON b.book_id=bm.book_id WHERE mm.mood_id=" + moodId;
+    var querystring = "SELECT DISTINCT b.book_title, b.author FROM movies m JOIN moviemoods mm ON m.movie_id=mm.movie_id JOIN bookmoods bm ON bm.mood_id=mm.mood_id JOIN books b ON b.book_id=bm.book_id WHERE m.movie_id=" + movieId;    
     let playlistquery = querystring;
     connection.query(playlistquery, (error, results, fields) => {
         if (error) {
@@ -262,6 +247,21 @@ app.get("/getMoviesForMovie", (req, res) => {
         res.send(results);
     });
 });
+
+// query to get recommended movies for movie
+app.get("/getRecommendedMoviesForMovie", (req, res) => {
+    var movieId = req.query.movieId;
+    var querystring = "SELECT DISTINCT m2.movie_title, m2.year_released FROM movies m JOIN moviemoods mm ON m.movie_id=mm.movie_id JOIN moviemoods mm2 ON mm2.mood_id=mm.mood_id JOIN movies m2 ON m2.movie_id=mm2.movie_id WHERE m.movie_id=" + movieId + " AND m2.movie_id!=" + movieId;
+       let playlistquery = querystring;
+    connection.query(playlistquery, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
 
 // query to add a song
 app.post('/addSong',(req, res) => {

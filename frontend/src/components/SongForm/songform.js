@@ -146,10 +146,11 @@ class AddSong extends Component {
 
         // search the database for the title of the song
         var songExists = false;
-        axios.get("/checkSongExists").then(response => {
+        axios.get("/checkSongExists", { params: {songtitle: songtitle, artist: artist}} ).then(response => {
             const listItems = response.data.map((d) => <li key={d.song_title}>{d.song_title} <i>by {d.artist} </i></li>);
             console.log(listItems.length);
-            if (listItems.length == 0) {
+            if (listItems.length > 0) {
+                console.log('songexisted');
                 songExists = true;
                 window.location.href = ROUTES.ADD_NEW_SONG;
                 return;
