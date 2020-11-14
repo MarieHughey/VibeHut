@@ -12,7 +12,7 @@ function SavePlaylist(props) {
       pathname: ROUTES.PLAYLISTFORM, 
       songList: songs
     };
-    return <h6><Link to={formLink}>Save Playlist!</Link></h6>;
+    return <h2><Link to={formLink}>Save Playlist!</Link></h2>;
   }
   return null;
 }

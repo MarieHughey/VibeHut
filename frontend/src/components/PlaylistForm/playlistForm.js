@@ -56,6 +56,7 @@ class SavePlaylist extends Component {
                 songIdList: songIds
             }).then(response => {
                 console.log("added playlist song");
+                window.location.href = ROUTES.GENERATE_PLAYLIST;
             });
 
         });
