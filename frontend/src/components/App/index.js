@@ -6,6 +6,7 @@ import Landing from '../Landing';
 import GeneratePlaylist from '../GeneratePlaylist';
 import Recommendations from '../Recommendations';
 import SongForm from '../SongForm';
+import playlistform from '../PlaylistForm';
 import Login from '../Login';
 import CreateAccount from '../CreateAccount';
 import UserDashboard from '../UserDashboard';
@@ -31,6 +32,7 @@ const App = () => (
     <Route exact path={ROUTES.LANDING} component={Landing} />
     <Route path={ROUTES.ADD_NEW_SONG} component={AddNewSong} onEnter={requireAuth} />
     <Route path={ROUTES.GENERATE_PLAYLIST} component={GeneratePlaylist} onEnter={requireAuth} />
+    <Route path={ROUTES.PLAYLISTFORM} component={playlistform} onEnter={requireAuth} />
     <Route path={ROUTES.RECOMMENDATIONS} component={Recommendations} onEnter={requireAuth} />
     <Route path={ROUTES.SONGFORM} component={SongForm} onEnter={requireAuth} />
     <Route path={ROUTES.LOGIN} component={Login} />

@@ -1,7 +1,21 @@
 import React, { Component } from 'react';
 import * as ROUTES from '../../constants/routes';
 import axios from "axios";
+import { Link, withRouter } from 'react-router-dom';
 axios.defaults.baseURL = "http://localhost:5000";
+
+function SavePlaylist(props) {
+  const songs = props.songs;
+  // console.log(props.songs);
+  if (props.gotPlaylist) {
+    const formLink = { 
+      pathname: ROUTES.PLAYLISTFORM, 
+      songList: songs
+    };
+    return <h6><Link to={formLink}>Save Playlist!</Link></h6>;
+  }
+  return null;
+}
 
 class MakeSearch extends Component {
     constructor(props){
@@ -13,6 +27,7 @@ class MakeSearch extends Component {
           matchedBooks:'',
           matchedBookIds:'',
           playlistSongs:'',
+          playlistSongIds:'',
           gotPlaylist: false,
           didRequest: false
       };
@@ -33,8 +48,11 @@ class MakeSearch extends Component {
         console.log("clicked movie: " + e.currentTarget.id);
         axios.get("/getPlaylistForMovie", { params: {movieId: e.currentTarget.id}}).then(response => {
           const listItems = response.data.map((d) => <li key={d.song_title}>{d.song_title} <i>by {d.artist} </i></li>);
-            this.setState({
-                playlistSongs: listItems
+          const songIds = response.data.map((d) => <li key={d.song_id}>{d.song_id}</li>);
+          console.log(response.data[0]);
+          this.setState({
+                playlistSongs: listItems,
+                playlistSongIds: songIds
           });
         });
         this.setState({
@@ -46,8 +64,10 @@ class MakeSearch extends Component {
         console.log("clicked book: " + e.currentTarget.id);
         axios.get("/getPlaylistForBook", { params: {bookId: e.currentTarget.id}}).then(response => {
           const listItems = response.data.map((d) => <li key={d.song_title}>{d.song_title} <i>by {d.artist} </i></li>);
-            this.setState({
-                playlistSongs: listItems
+          const songIds = response.data.map((d) => <li key={d.song_id}>{d.song_id}</li>);
+          this.setState({
+                playlistSongs: listItems,
+                playlistSongIds: songIds
           });
         });
         this.setState({
@@ -159,6 +179,8 @@ class MakeSearch extends Component {
 
         {playlistresults}
         <p>{this.state.playlistSongs}</p>
+
+        <SavePlaylist songs={this.state.playlistSongIds} gotPlaylist={this.state.gotPlaylist}/>
 
         <div id="errorMessage"></div>
 

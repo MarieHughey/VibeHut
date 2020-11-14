@@ -6,3 +6,4 @@ export const SONGFORM = '/addnewsong/songform';
 export const CREATEACCOUNT = '/createaccount';
 export const LOGIN = '/login';
 export const USERDASHBOARD = '/dashboard';
+export const PLAYLISTFORM = '/generateplaylist/playlistform';

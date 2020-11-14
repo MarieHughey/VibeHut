@@ -19,7 +19,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // test connection to database
-/*
+
 connection.connect(function(err) {
     if (err) {
       return console.error('error: ' + err.message);
@@ -27,7 +27,7 @@ connection.connect(function(err) {
   
     console.log('Connected to the VibeHut server.');
   });
-*/
+
 
 //app.get("/test", (req, res) => res.send("testing backend"));
 
@@ -181,7 +181,7 @@ app.get("/getMatchingMovies", (req, res) => {
 // query to get songs for a playlist for a searched movie
 app.get("/getPlaylistForMovie", (req, res) => {
     var movieId = req.query.movieId;
-    var querystring = "SELECT DISTINCT s.song_title, s.artist FROM movies m JOIN moviemoods mm ON m.movie_id=mm.movie_id JOIN songmoods sm ON sm.mood_id=mm.mood_id JOIN songs s ON sm.song_id=s.song_id WHERE m.movie_id=" + movieId;
+    var querystring = "SELECT DISTINCT s.song_id, s.song_title, s.artist FROM movies m JOIN moviemoods mm ON m.movie_id=mm.movie_id JOIN songmoods sm ON sm.mood_id=mm.mood_id JOIN songs s ON sm.song_id=s.song_id WHERE m.movie_id=" + movieId;
     let playlistquery = querystring;
     connection.query(playlistquery, (error, results, fields) => {
         if (error) {
@@ -195,7 +195,7 @@ app.get("/getPlaylistForMovie", (req, res) => {
 // query to get songs for a playlist for a searched book
 app.get("/getPlaylistForBook", (req, res) => {
     var bookId = req.query.bookId;
-    var querystring = "SELECT DISTINCT s.song_title, s.artist FROM books b JOIN bookmoods bm ON b.book_id=bm.book_id JOIN songmoods sm ON sm.mood_id=bm.mood_id JOIN songs s ON sm.song_id=s.song_id WHERE b.book_id=" + bookId;
+    var querystring = "SELECT DISTINCT s.song_id, s.song_title, s.artist FROM books b JOIN bookmoods bm ON b.book_id=bm.book_id JOIN songmoods sm ON sm.mood_id=bm.mood_id JOIN songs s ON sm.song_id=s.song_id WHERE b.book_id=" + bookId;
     let playlistquery = querystring;
     connection.query(playlistquery, (error, results, fields) => {
         if (error) {
@@ -375,5 +375,54 @@ app.get("/getRecommendedMoviesForMovie", (req, res) => {
         res.send(results);
     });
 });
+
+// query to return all playlists
+app.get("/getPlaylists", (req, res) => {
+    let query = `SELECT * FROM playlists`;
+    connection.query(query, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
+// query to add a playlist
+app.post('/addPlaylist',(req, res) => {
+    var playlist_name = req.body.playlist_name;
+    var playlist_id = req.body.playlist_id;
+    var user_id = req.body.user_id;
+    console.log(req.body);
+    var querystring = "INSERT INTO playlists (playlist_id, playlist_name, user_id) VALUES (" + playlist_id + ", '" + playlist_name + "', '" + user_id + "')";
+    connection.query(  querystring, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+    });
+    res.end("added playlist");
+});
+
+// query to add song to playist
+app.post('/addPlaylistSongs', (req, res) => {
+    var playlist_id = req.body.playlist_id;
+    var song_id_list = req.body.songIdList;
+
+    console.log(playlist_id);
+    console.log(song_id_list);
+
+    for (let i = 0; i < song_id_list.length; i++) {
+        console.log(song_id_list[i]);
+        var querystring = "INSERT INTO playlistsongs (playlist_id, song_id) VALUES (" + playlist_id + ", " + song_id_list[i] + ")";
+        connection.query(  querystring, (error, results, fields) => {
+            if (error) {
+                return console.error(error.message);
+            }
+            console.log(results);
+        });
+    }
+    res.end("added playlist songs");
+})
 
 app.listen(port, () => console.log(`app listening on port ${port}`));
