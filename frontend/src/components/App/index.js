@@ -10,6 +10,7 @@ import playlistform from '../PlaylistForm';
 import Login from '../Login';
 import CreateAccount from '../CreateAccount';
 import UserDashboard from '../UserDashboard';
+import Settings from '../Settings';
 
 /*
 function requireAuth(nextState, replace, next) {
@@ -38,6 +39,7 @@ const App = () => (
     <Route path={ROUTES.LOGIN} component={Login} />
     <Route path={ROUTES.USERDASHBOARD} component={UserDashboard} onEnter={requireAuth} />
     <Route path={ROUTES.CREATEACCOUNT} component={CreateAccount} /> 
+    <Route path={ROUTES.SETTINGS} component={Settings} />
     </div>
   </Router>
   

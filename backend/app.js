@@ -48,6 +48,7 @@ app.post('/createAccount',(req, res) => {
     res.end("added user");
 });
 
+
 // query to return all users
 app.get("/getUsers", (req, res) => {
     let userquery = `SELECT * FROM users`;
@@ -73,6 +74,48 @@ app.get("/checkUserExists", (req, res) => {
         console.log(results);
         res.send(results);
     });
+});
+
+app.get('/CheckPassword', (req, res) => {
+    var id = req.query.id;
+    var querystring = "SELECT password FROM users WHERE userId='" + id + "'";
+    console.log(querystring);
+    let usermatchquery = querystring;
+    connection.query(usermatchquery, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
+app.post('/UpdatePassword', (req, res) => {
+    var id = req.body.id;
+    var password = req.body.password;
+    var querystring = "UPDATE users SET password ='" + password + "'WHERE userId='" + id + "'";
+    console.log(querystring);
+    connection.query(  querystring, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+    });
+    res.end("password updated");
+});
+
+app.post('/UpdateUsername', (req, res) => {
+    var id = req.body.id;
+    var username = req.body.username;
+    var querystring = "UPDATE users SET username ='" + username + "'WHERE userId='" + id + "'";
+    console.log(querystring);
+    connection.query(  querystring, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+    });
+    res.end("username updated");
 });
 
 // query to log user in database

@@ -28,6 +28,10 @@ const userdashboard = () => {
     <p><Link to={ROUTES.ADD_NEW_SONG}>add song</Link></p>
 
     <br></br>
+
+    <h2><Link to={ROUTES.SETTINGS}>Settings</Link></h2>
+        
+    <br></br>
     <br></br>
     <br></br>
     <br></br>
