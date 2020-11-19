@@ -1,5 +1,7 @@
 export const LANDING = '/';
 export const ADD_NEW_SONG = '/addnewsong';
+export const ADD_NEW_MOVIE = '/addnewmovie';
+export const ADD_NEW_BOOK = '/addnewbook';
 export const GENERATE_PLAYLIST = '/generateplaylist';
 export const RECOMMENDATIONS = '/recommendations';
 export const SONGFORM = '/addnewsong/songform';
