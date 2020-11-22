@@ -178,6 +178,10 @@ class MakeSearch extends Component {
         {recommendedbookresults}
         <p>{this.state.recommendedBooks}</p>
 
+        <h6>Don't see your favorite movie or book?</h6>
+        <h6><Link to={ROUTES.MOVIEFORM}>Add movie here!</Link></h6>
+        <h6><Link to={ROUTES.BOOKFORM}>Add book here!</Link></h6>
+
         <div id="errorMessage"></div>
 
         </div>
