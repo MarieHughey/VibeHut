@@ -638,4 +638,43 @@ app.post('/addFaveMovie', (req, res) => {
     res.end("added fave movie");
 });
 
+// query to return favorite books
+app.get("/getFaveBooks", (req, res) => {
+    var user_id = req.query.userid;
+    var query = "SELECT * FROM favebooks f JOIN books b ON f.book_id=b.book_id WHERE user_id=" + user_id;
+    connection.query(query, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
+// query to return favorite movies
+app.get("/getFaveMovies", (req, res) => {
+    var user_id = req.query.userid;
+    var query = "SELECT * FROM favemovies f JOIN movies m ON f.movie_id=m.movie_id WHERE user_id=" + user_id ;
+    connection.query(query, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
+// query to get playlists for user
+app.get("/getPlaylistsForUser", (req, res) => {
+    var user_id = req.query.userid;
+    var query = "SELECT * FROM playlists p WHERE user_id=" + user_id ;
+    connection.query(query, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
 app.listen(port, () => console.log(`app listening on port ${port}`));

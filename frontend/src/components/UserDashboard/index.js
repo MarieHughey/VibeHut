@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import AppIcon from '../../images/vibehut-logo.png';
 import * as ROUTES from '../../constants/routes';
+import Faves from './faves.js';
+import Playlists from './playlists.js';
 
 const userdashboard = () => {
 
@@ -14,13 +16,21 @@ const userdashboard = () => {
 
     <img src={AppIcon} alt="vibehuticon"/>
 
+    <h2> Welcome {localStorage.getItem("currUser")}!</h2>
+    <p><Link to={ROUTES.SETTINGS}>Account Settings</Link></p>
+
+    <br/>
+    <br/>
+
     <h1>Create a Playlist!</h1>
     <h2><Link to={ROUTES.GENERATE_PLAYLIST}>generate vibes</Link></h2>
+    <Playlists/>
 
     <br></br>
 
     <h1>Get Recommendations!</h1>
     <h2><Link to={ROUTES.RECOMMENDATIONS}>find me something</Link></h2>
+    <Faves/>
 
     <br></br>
 
@@ -28,8 +38,6 @@ const userdashboard = () => {
     <p><Link to={ROUTES.ADD_NEW_SONG}>add song</Link></p>
 
     <br></br>
-
-    <h2><Link to={ROUTES.SETTINGS}>Settings</Link></h2>
         
     <br></br>
     <br></br>
