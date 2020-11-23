@@ -10,6 +10,8 @@ import playlistform from '../PlaylistForm';
 import Login from '../Login';
 import CreateAccount from '../CreateAccount';
 import UserDashboard from '../UserDashboard';
+import MovieForm from '../MovieForm';
+import BookForm from '../BookForm';
 import Settings from '../Settings';
 
 /*
@@ -38,6 +40,8 @@ const App = () => (
     <Route path={ROUTES.SONGFORM} component={SongForm} onEnter={requireAuth} />
     <Route path={ROUTES.LOGIN} component={Login} />
     <Route path={ROUTES.USERDASHBOARD} component={UserDashboard} onEnter={requireAuth} />
+    <Route path={ROUTES.MOVIEFORM} component={MovieForm} />
+    <Route path={ROUTES.BOOKFORM} component={BookForm} />
     <Route path={ROUTES.CREATEACCOUNT} component={CreateAccount} /> 
     <Route path={ROUTES.SETTINGS} component={Settings} />
     </div>

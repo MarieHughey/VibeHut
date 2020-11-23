@@ -146,7 +146,7 @@ class AddMovie extends Component {
 
         // search the database for the title of the song
         var movieExists = false;
-        axios.get("/checkMovieExists", { params: {movietitle: movietitle, producer: producer}} ).then(response => {
+        axios.get("/checkMovieExists", { params: {movietitle: movietitle, producer: pro}} ).then(response => {
             const listItems = response.data.map((d) => <li key={d.movie_title}>{d.movie_title} <i>by {d.producer} </i></li>);
             console.log(listItems.length);
             if (listItems.length > 0) {
@@ -170,12 +170,13 @@ class AddMovie extends Component {
                 // now add the song to the songs database
                 axios.post("/addMovie", {
                     movietitle: movietitle,
-                    producer: producer,
-                    yearReleased: yearReleased,
+                    producer: pro,
+                    yearReleased: yearreleased,
                     movieid: newid
                 }).then(response => {
                     console.log("added movie");
                 });
+                
                 // get the mood ids for the mood names
                 var moodIds = [];
                 axios.get("/getMoodIds", { params: {moodnames: checkedMoods}}).then(response => {
@@ -191,9 +192,10 @@ class AddMovie extends Component {
                     }).then(response => {
                         console.log("added movie moods");
                         // go back to non-form page
-                        window.location.href = ROUTES.ADD_NEW_MOVIE;
+                        window.location.href = ROUTES.USERDASHBOARD;
                     })
                 });
+                
             });
         });
     }

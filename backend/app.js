@@ -135,7 +135,7 @@ app.get("/login", (req, res) => {
 });
 
 
-// test query to return all songs
+// query to return all songs
 app.get("/getSongs", (req, res) => {
     let songquery = `SELECT * FROM songs`;
     connection.query(songquery, (error, results, fields) => {
@@ -146,6 +146,33 @@ app.get("/getSongs", (req, res) => {
         res.send(results);
     });
 });
+
+
+// query to return all movies
+app.get("/getMovies", (req, res) => {
+    let moviequery = `SELECT * FROM movies`;
+    connection.query(moviequery, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
+
+// query to return all songs
+app.get("/getBooks", (req, res) => {
+    let bookquery = `SELECT * FROM books`;
+    connection.query(bookquery, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
 
 // query to return all moods
 app.get("/getMoods", (req, res) => {
@@ -174,6 +201,41 @@ app.get("/checkSongExists", (req, res) => {
         res.send(results);
     });
 });
+
+
+// query to see if exact movie exists in database
+app.get("/checkMovieExists", (req, res) => {
+    var movietitle = req.query.movietitle;
+    var producer = req.query.producer;
+    var querystring = "SELECT * FROM movies WHERE movie_title='" + movietitle + "' AND producer='" + producer + "'";
+    console.log(querystring);
+    let moviematchquery = querystring;
+    connection.query(moviematchquery, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
+
+// query to see if exact book exists in database
+app.get("/checkBookExists", (req, res) => {
+    var booktitle = req.query.booktitle;
+    var author = req.query.author;
+    var querystring = "SELECT * FROM books WHERE book_title='" + booktitle + "' AND author='" + author + "'";
+    console.log(querystring);
+    let bookmatchquery = querystring;
+    connection.query(bookmatchquery, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
 
 // query to search for a specific song
 app.get("/getMatchingSongs", (req, res) => {
@@ -342,7 +404,85 @@ app.post('/addSongMoods', (req, res) => {
         });
     }
     res.end("added song moods");
+});
+
+
+// query to add a movie
+app.post('/addMovie',(req, res) => {
+    var movie_title = req.body.movietitle;
+    var producer = req.body.producer;
+    var year_released = req.body.yearReleased;
+    var movie_id = req.body.movieid;
+    console.log(req.body);
+    var querystring = "INSERT INTO movies (movie_title, year_released, producer, movie_id) VALUES ('" + movie_title + "', '" + year_released + "', '" + producer + "', '" + movie_id + "')";
+    connection.query(  querystring, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+    });
+    res.end("added movie");
+});
+
+// query to add movie moods
+app.post('/addMovieMoods', (req, res) => {
+    var movie_id = req.body.movieid;
+    var mood_id_list = req.body.moodidlist;
+
+    console.log(movie_id);
+    console.log(mood_id_list);
+
+    for (let i = 0; i < mood_id_list.length; i++) {
+        console.log(mood_id_list[i]);
+        var querystring = "INSERT INTO moviemoods (movie_id, mood_id) VALUES (" + movie_id + ", " + mood_id_list[i] + ")";
+        connection.query(  querystring, (error, results, fields) => {
+            if (error) {
+                return console.error(error.message);
+            }
+            console.log(results);
+        });
+    }
+    res.end("added movie moods");
+});
+
+
+// query to add a book
+app.post('/addBook',(req, res) => {
+    var book_title = req.body.booktitle;
+    var author = req.body.author;
+    var book_id = req.body.bookid;
+    console.log(req.body);
+    var querystring = "INSERT INTO books (book_title, author, book_id) VALUES ('" + book_title + "', '" + author + "', '" + book_id + "')";
+    connection.query(  querystring, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+    });
+    res.end("added book");
+});
+
+// query to add book moods
+app.post('/addBookMoods', (req, res) => {
+    var book_id = req.body.bookid;
+    var mood_id_list = req.body.moodidlist;
+
+    console.log(book_id);
+    console.log(mood_id_list);
+
+    for (let i = 0; i < mood_id_list.length; i++) {
+        console.log(mood_id_list[i]);
+        var querystring = "INSERT INTO bookmoods (book_id, mood_id) VALUES (" + book_id + ", " + mood_id_list[i] + ")";
+        connection.query(  querystring, (error, results, fields) => {
+            if (error) {
+                return console.error(error.message);
+            }
+            console.log(results);
+        });
+    }
+    res.end("added book moods");
 })
+
 
 // query to get mood id from mood name
 app.get('/getMoodIds', (req, res) => {

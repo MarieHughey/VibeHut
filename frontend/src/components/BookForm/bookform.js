@@ -182,7 +182,7 @@ class AddBook extends Component {
                     }).then(response => {
                         console.log("added book moods");
                         // go back to non-form page
-                        window.location.href = ROUTES.ADD_NEW_BOOK;
+                        window.location.href = ROUTES.USERDASHBOARD;
                     })
                 });
             });
