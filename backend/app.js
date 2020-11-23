@@ -314,7 +314,7 @@ app.get("/getPlaylistForBook", (req, res) => {
 // query to get recommended books for book
 app.get("/getRecommendedBooksForBook", (req, res) => {
     var bookId = req.query.bookId;
-    var querystring = "SELECT DISTINCT b2.book_title, b2.author FROM books b JOIN bookmoods bm ON b.book_id=bm.book_id JOIN bookmoods bm2 ON bm2.mood_id=bm.mood_id JOIN books b2 ON b2.book_id=bm2.book_id WHERE b.book_id=" + bookId + " AND b2.book_id!=" + bookId;
+    var querystring = "SELECT DISTINCT b2.book_title, b2.author, b2.book_id FROM books b JOIN bookmoods bm ON b.book_id=bm.book_id JOIN bookmoods bm2 ON bm2.mood_id=bm.mood_id JOIN books b2 ON b2.book_id=bm2.book_id WHERE b.book_id=" + bookId + " AND b2.book_id!=" + bookId;
     let playlistquery = querystring;
     connection.query(playlistquery, (error, results, fields) => {
         if (error) {
@@ -328,7 +328,7 @@ app.get("/getRecommendedBooksForBook", (req, res) => {
 // query to get recommended movies for book
 app.get("/getRecommendedMoviesForBook", (req, res) => {
     var bookId = req.query.bookId;
-    var querystring = "SELECT DISTINCT m.movie_title, m.year_released FROM books b JOIN bookmoods bm ON b.book_id=bm.book_id JOIN moviemoods mm ON mm.mood_id=bm.mood_id JOIN movies m ON mm.movie_id=m.movie_id WHERE b.book_id=" + bookId;
+    var querystring = "SELECT DISTINCT m.movie_title, m.year_released, m.movie_id FROM books b JOIN bookmoods bm ON b.book_id=bm.book_id JOIN moviemoods mm ON mm.mood_id=bm.mood_id JOIN movies m ON mm.movie_id=m.movie_id WHERE b.book_id=" + bookId;
     let playlistquery = querystring;
     connection.query(playlistquery, (error, results, fields) => {
         if (error) {
@@ -342,7 +342,7 @@ app.get("/getRecommendedMoviesForBook", (req, res) => {
 // query to get recommended books for movie
 app.get("/getRecommendedBooksForMovie", (req, res) => {
     var movieId = req.query.movieId;
-    var querystring = "SELECT DISTINCT b.book_title, b.author FROM movies m JOIN moviemoods mm ON m.movie_id=mm.movie_id JOIN bookmoods bm ON bm.mood_id=mm.mood_id JOIN books b ON b.book_id=bm.book_id WHERE m.movie_id=" + movieId;    
+    var querystring = "SELECT DISTINCT b.book_title, b.author, b.book_id FROM movies m JOIN moviemoods mm ON m.movie_id=mm.movie_id JOIN bookmoods bm ON bm.mood_id=mm.mood_id JOIN books b ON b.book_id=bm.book_id WHERE m.movie_id=" + movieId;    
     let playlistquery = querystring;
     connection.query(playlistquery, (error, results, fields) => {
         if (error) {
@@ -356,7 +356,7 @@ app.get("/getRecommendedBooksForMovie", (req, res) => {
 // query to get recommended movies for movie
 app.get("/getRecommendedMoviesForMovie", (req, res) => {
     var movieId = req.query.movieId;
-    var querystring = "SELECT DISTINCT m2.movie_title, m2.year_released FROM movies m JOIN moviemoods mm ON m.movie_id=mm.movie_id JOIN moviemoods mm2 ON mm2.mood_id=mm.mood_id JOIN movies m2 ON m2.movie_id=mm2.movie_id WHERE m.movie_id=" + movieId + " AND m2.movie_id!=" + movieId;
+    var querystring = "SELECT DISTINCT m2.movie_title, m2.year_released, m2.movie_id FROM movies m JOIN moviemoods mm ON m.movie_id=mm.movie_id JOIN moviemoods mm2 ON mm2.mood_id=mm.mood_id JOIN movies m2 ON m2.movie_id=mm2.movie_id WHERE m.movie_id=" + movieId + " AND m2.movie_id!=" + movieId;
        let playlistquery = querystring;
     connection.query(playlistquery, (error, results, fields) => {
         if (error) {
@@ -607,5 +607,35 @@ app.post('/addPlaylistSongs', (req, res) => {
     }
     res.end("added playlist songs");
 })
+
+// query to add favorite book
+app.post('/addFaveBook', (req, res) => {
+    var user_id = req.body.userid;
+    var book_id = req.body.bookid;
+
+    var querystring = "INSERT INTO favebooks (book_id, user_id) VALUES (" + book_id + ", " + user_id + ")";
+    connection.query(querystring, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+    });
+    res.end("added fave book");
+});
+
+// query to add favorite movie
+app.post('/addFaveMovie', (req, res) => {
+    var user_id = req.body.userid;
+    var movie_id = req.body.movieid;
+
+    var querystring = "INSERT INTO favemovies (movie_id, user_id) VALUES (" + movie_id + ", " + user_id + ")";
+    connection.query(querystring, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+    });
+    res.end("added fave movie");
+});
 
 app.listen(port, () => console.log(`app listening on port ${port}`));

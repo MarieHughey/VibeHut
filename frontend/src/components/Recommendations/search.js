@@ -4,6 +4,7 @@ import axios from "axios";
 import { Link, withRouter } from 'react-router-dom';
 axios.defaults.baseURL = "http://localhost:5000";
 
+
 class MakeSearch extends Component {
     constructor(props){
       super(props);
@@ -15,6 +16,8 @@ class MakeSearch extends Component {
           matchedBookIds:'',
           recommendedBooks:'',
           recommendedMovies:'',
+          recommendedMovieIds:'',
+          recommendedBookIds:'',
           gotRecommended: false,
           didRequest: false
       };
@@ -34,39 +37,75 @@ class MakeSearch extends Component {
     movieItemPress(e){
         console.log("clicked movie: " + e.currentTarget.id);
         axios.get("/getRecommendedBooksForMovie", { params: {movieId: e.currentTarget.id}}).then(response => {
-          const listItems = response.data.map((d) => <li key={d.book_title}>{d.book_title} <i>by {d.author} </i></li>);
-            this.setState({
-                recommendedBooks: listItems
+          const listItems = response.data.map((d) => <li style={{listStyle: "none"}} key={d.book_title}>{d.book_title} <i>by {d.author} </i></li>);
+          const bookIds = response.data.map((d) => <li key={d.book_id}>{d.book_id}</li>);
+          this.setState({
+                recommendedBooks: listItems,
+                recommendedBookIds: bookIds
           });
         });
+
         axios.get("/getRecommendedMoviesForMovie", { params: {movieId: e.currentTarget.id}}).then(response => {
-            const listItems = response.data.map((d) => <li key={d.movie_title}>{d.movie_title} <i>   ({d.year_released}) </i></li>);
-              this.setState({
-                  recommendedMovies: listItems
+            const listItems = response.data.map((d) => <li style={{listStyle: "none"}} key={d.movie_title}>{d.movie_title} <i>   ({d.year_released}) </i></li>);
+            const movieIds = response.data.map((d) => <li key={d.movie_id}>{d.movie_id}</li>);
+            this.setState({
+                  recommendedMovies: listItems,
+                  recommendedMovieIds: movieIds
             });
           });
+
         this.setState({
           gotRecommended: true
         });
     }
 
+    faveMoviePress(e) {
+      console.log("favorited movie: " + e.currentTarget.id);
+
+      // add movie to favorites
+      axios.post("/addFaveMovie", {
+        movieid: e.currentTarget.id,
+        userid: localStorage.getItem('currId')
+      }).then(response => {
+        console.log("added fave movie");
+      });
+    }
+
+    faveBookPress(e) {
+      console.log("favorited book: " + e.currentTarget.id);
+
+      // add book to favorites
+      axios.post("/addFaveBook", {
+        bookid: e.currentTarget.id,
+        userid: localStorage.getItem('currId')
+      }).then(response => {
+        console.log("added fave book");
+      });
+    }
+
     bookItemPress(e){
         console.log("clicked book: " + e.currentTarget.id);
         axios.get("/getRecommendedBooksForBook", { params: {bookId: e.currentTarget.id}}).then(response => {
-            const listItems = response.data.map((d) => <li key={d.book_title}>{d.book_title} <i>by {d.author} </i></li>);
-              this.setState({
-                  recommendedBooks: listItems
+            const listItems = response.data.map((d) => <li style={{listStyle: "none"}} key={d.book_title}>{d.book_title} <i>by {d.author} </i></li>);
+            const bookIds = response.data.map((d) => <li key={d.book_id}>{d.book_id}</li>);
+            this.setState({
+                  recommendedBooks: listItems,
+                  recommendedBookIds: bookIds
+            });
+        });
+
+        axios.get("/getRecommendedMoviesForBook", { params: {bookId: e.currentTarget.id}}).then(response => {
+            const listItems = response.data.map((d) => <li style={{listStyle: "none"}} key={d.movie_title}>{d.movie_title} <i>   ({d.year_released}) </i></li>);
+            const movieIds = response.data.map((d) => <li key={d.movie_id}>{d.movie_id}</li>);
+            this.setState({
+                  recommendedMovies: listItems,
+                  recommendedMovieIds: movieIds
             });
           });
-          axios.get("/getRecommendedMoviesForBook", { params: {bookId: e.currentTarget.id}}).then(response => {
-              const listItems = response.data.map((d) => <li key={d.movie_title}>{d.movie_title} <i>   ({d.year_released}) </i></li>);
-                this.setState({
-                    recommendedMovies: listItems
-              });
-            });
-          this.setState({
-            gotRecommended: true
-          });
+
+        this.setState({
+          gotRecommended: true
+        });
     }
 
     keyPressUser(e){
@@ -113,8 +152,35 @@ class MakeSearch extends Component {
       let recommendedmovieresults;
       
       if (this.state.gotRecommended) {
-        recommendedbookresults = <h3>Book Recommendations:</h3>
-        recommendedmovieresults = <h3>Movie Recommendations:</h3>
+        recommendedbookresults = <h3>Book Recommendations (Click to Add to Favorites!):</h3>
+        recommendedmovieresults = <h3>Movie Recommendations (Click to Add to Favorites!):</h3>
+      }
+
+      var movieResultButtons = [];
+      var bookResultButtons = [];
+
+      if (this.state.recommendedMovieIds.length > 0) {
+        console.log(this.state.recommendedMovieIds.length);
+        for(let i = 0; i < this.state.recommendedMovies.length; i++)
+        {
+            var movieid = this.state.recommendedMovieIds[i].key;
+            //console.log("rec:" + movieid);
+            var button = <button onClick={this.faveMoviePress} key={movieid} id={movieid}> {this.state.recommendedMovies[i]}</button>
+            movieResultButtons.push(button);
+    
+        }
+      }
+
+      if (this.state.recommendedBookIds.length > 0) {
+        console.log(this.state.recommendedBookIds.length);
+        for(let i = 0; i < this.state.recommendedBooks.length; i++)
+        {
+            var bookid = this.state.recommendedBookIds[i].key;
+            //console.log("rec:" + bookid);
+            var button = <button onClick={this.faveBookPress} key={bookid} id={bookid}> {this.state.recommendedBooks[i]}</button>
+            bookResultButtons.push(button);
+    
+        }
       }
 
       var movieButtons = [];
@@ -158,7 +224,7 @@ class MakeSearch extends Component {
         <br></br>
         <br></br>
 
-        <button color="black" onClick={() => this.keyPressUser()} id='search' size="small">
+        <button color="black" onClick={() => this.keyPressUser()} id='search' size="small">
             Search!
         </button>
 
@@ -174,10 +240,10 @@ class MakeSearch extends Component {
         <br></br>
 
         {recommendedmovieresults}
-        <p>{this.state.recommendedMovies}</p>
+        <p>{movieResultButtons}</p>
 
         {recommendedbookresults}
-        <p>{this.state.recommendedBooks}</p>
+        <p>{bookResultButtons}</p>
 
         <h6>Don't see your favorite movie or book?</h6>
         <h6><Link to={ROUTES.MOVIEFORM}>Add movie here!</Link></h6>
