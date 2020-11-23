@@ -677,4 +677,34 @@ app.get("/getPlaylistsForUser", (req, res) => {
     });
 });
 
+// query to see if exact user exists in database
+app.get("/checkIfAdmin", (req, res) => {
+    var userId = req.query.id;
+    console.log(userId)
+    var querystring = "SELECT * FROM users WHERE userId='" + userId + "' AND isAdmin=1";
+    console.log(querystring);
+    let usermatchquery = querystring;
+    connection.query(usermatchquery, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
+// grant admin privileges
+app.post('/makeAdmin', (req, res) => {
+    var id = req.body.id;
+    var querystring = "UPDATE users SET isAdmin=1 WHERE userId='" + id + "'";
+    console.log(querystring);
+    connection.query(  querystring, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+    });
+    res.end("admin privileges updated");
+});
+
 app.listen(port, () => console.log(`app listening on port ${port}`));

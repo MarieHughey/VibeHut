@@ -5,6 +5,7 @@ import * as ROUTES from '../../constants/routes';
 import UpdateP from './updatep';
 import UpdateU from './updateu';
 import Logout from './logout';
+import AdminPass from './adminpass';
 
 const settings = () => {
 
@@ -27,6 +28,9 @@ const settings = () => {
         <h2>Change Password</h2>
         <UpdateP />
         <Logout />
+
+        <h4>Activate Admin Account</h4>
+        <AdminPass/>
     
         <br></br>
         <br></br>

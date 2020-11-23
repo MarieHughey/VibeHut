@@ -4,6 +4,7 @@ import AppIcon from '../../images/vibehut-logo.png';
 import * as ROUTES from '../../constants/routes';
 import Faves from './faves.js';
 import Playlists from './playlists.js';
+import DisplayAdmin from './displayadmin.js';
 
 const userdashboard = () => {
 
@@ -18,6 +19,7 @@ const userdashboard = () => {
 
     <h2> Welcome {localStorage.getItem("currUser")}!</h2>
     <p><Link to={ROUTES.SETTINGS}>Account Settings</Link></p>
+    <DisplayAdmin/>
 
     <br/>
     <br/>
