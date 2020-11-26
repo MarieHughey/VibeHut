@@ -707,4 +707,98 @@ app.post('/makeAdmin', (req, res) => {
     res.end("admin privileges updated");
 });
 
+// query to get songs for a playlist
+app.get("/getSavedPlaylistSongs", (req, res) => {
+    var playlistId = req.query.playlistId;
+    var querystring = "SELECT DISTINCT ps.song_id, s.song_title, s.artist FROM playlistsongs ps JOIN songs s ON ps.song_id=s.song_id WHERE ps.playlist_id=" + playlistId;
+    let playlistquery = querystring;
+    connection.query(playlistquery, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
+// query to delete playlist
+app.post("/deletePlaylist", (req, res) => {
+    var playlistId = req.body.playlist_id;
+    var querystring = "DELETE FROM playlists WHERE playlist_id = " + playlistId;
+    let playlistquery = querystring;
+    connection.query(playlistquery, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        // what to return here? 
+        // res.send(results);
+    });
+    querystring = "DELETE FROM playlistsongs WHERE playlist_id=" + playlistId;
+    connection.query(querystring, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        // what to return here? 
+        // res.send(results);
+    });
+});
+
+// query to get songs by name
+app.get("/getSongsByName", (req, res) => {
+    var songTitle = req.query.songTitle;
+    let songquery = "SELECT * FROM songs WHERE song_title LIKE '%" + songTitle + "%'";
+    connection.query(songquery, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
+// query to add song to playlist
+app.post('/addSongSavedplaylist', (req, res) => {
+    var playlist_id = req.body.playlist_id;
+    var song_id = req.body.song_id;
+
+    var querystring = "INSERT INTO playlistsongs (playlist_id, song_id) VALUES (" + playlist_id + ", " + song_id + ")";
+    connection.query(querystring, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+    });
+    res.end("added song to playlist");
+})
+
+// query to delete song from playlist 
+app.post("/deleteSongSavedPlaylist", (req, res) => {
+    var song_id = req.body.song_id;
+    var playlist_id = req.body.playlist_id;
+    let songquery = "DELETE FROM playlistsongs WHERE song_id=" + song_id + " AND playlist_id=" + playlist_id;
+    connection.query(songquery, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
+// query to edit playlist name
+app.post('/updatePlaylistName', (req, res) => {
+    var playlist_id = req.body.playlist_id;
+    var name = req.body.name;
+    var querystring = "UPDATE playlists SET playlist_name = \"" + name + "\" WHERE playlist_id =" + playlist_id;
+    connection.query(querystring, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+    });
+    res.end("added song to playlist");
+})
+
 app.listen(port, () => console.log(`app listening on port ${port}`));

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
+import { Link, withRouter } from 'react-router-dom';
 axios.defaults.baseURL = "http://localhost:5000";
 
 let userplaylists = [];
@@ -23,8 +24,15 @@ export default class Playlists extends Component {
             {
                 var playlistid = playlistIds[i].key;
                 //console.log(playlistid);
-                var button = <button onClick={this.playlistpress} key={playlistid} id={playlistid}> {listItems[i]}</button>
-                userplaylists.push(button);
+                // var button = <Link to={'/savedplaylist/' + playlistid}> 
+                //         <button onClick={this.playlistpress} key={playlistid} id={playlistid}> {listItems[i]}</button></Link>
+                const playlistLink = { 
+                    pathname: '/savedplaylist/' + playlistid, 
+                    playlist_name: listItems[i],
+                    playlist_id: playlistid
+                };
+                var link = <h4><Link to={playlistLink}>{listItems[i]}</Link></h4>;
+                userplaylists.push(link);
             }
             console.log(listItems);
             

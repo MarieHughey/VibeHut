@@ -28,9 +28,10 @@ class SavePlaylist extends Component {
 
         axios.get("/getPlaylists").then(response => {
             var id = 0; 
-            const listItemsAll = response.data.map((d) => <li key={d.playlist_name}>{d.playlist_name} </li>);
+            const listItemsAll = response.data.map((d) => <li key={d.playlist_id}>{d.playlist_name} </li>);
             console.log(listItemsAll.length);
-            id = listItemsAll.length + 1;
+            id = parseInt(listItemsAll[listItemsAll.length - 1].key, 10) + 1;
+            // console.log(id);
         
             console.log("name: " + playlistName);
 

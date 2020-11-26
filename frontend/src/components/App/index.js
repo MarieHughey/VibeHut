@@ -14,6 +14,7 @@ import MovieForm from '../MovieForm';
 import BookForm from '../BookForm';
 import Settings from '../Settings';
 import Admin from '../Admin';
+import savedPlaylist from '../SavedPlaylist';
 
 /*
 function requireAuth(nextState, replace, next) {
@@ -46,6 +47,7 @@ const App = () => (
     <Route path={ROUTES.CREATEACCOUNT} component={CreateAccount} /> 
     <Route path={ROUTES.SETTINGS} component={Settings} />
     <Route path={ROUTES.ADMIN} component={Admin} />
+    <Route path={ROUTES.SAVEDPLAYLIST} component={savedPlaylist} onEnter={requireAuth}/>
     </div>
   </Router>
   
