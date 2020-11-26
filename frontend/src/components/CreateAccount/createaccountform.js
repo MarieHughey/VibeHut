@@ -91,10 +91,10 @@ class CreateAccountForm extends Component {
             if (listItems.length == 0) {
                 // we passed all checks so we can add the user here
                 // first get the amount of users so we can check the length and give user id
-                axios.get("/getUsers").then(response => {
-                    const listItemsAll = response.data.map((d) => <li key={d.username}>{d.username}</li>);
-                    console.log(listItemsAll.length);
-                    var newid = listItemsAll.length + 1;
+                axios.get("/getMaxId").then(response => {
+                    var listItemsAll = response.data[0].userId;
+                    console.log(listItemsAll);
+                    var newid = listItemsAll + 1;
 
                     // now we can add it
                     axios.post("/createAccount", {

@@ -51,8 +51,8 @@ app.post('/createAccount',(req, res) => {
 
 
 // query to return all users
-app.get("/getUsers", (req, res) => {
-    let userquery = `SELECT * FROM users`;
+app.get("/getMaxId", (req, res) => {
+    let userquery = `SELECT MAX(userId) as userId FROM users`;
     connection.query(userquery, (error, results, fields) => {
         if (error) {
             return console.error(error.message);
