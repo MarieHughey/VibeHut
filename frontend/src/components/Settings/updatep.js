@@ -49,23 +49,15 @@ class UpdateP extends Component {
             });
         }
 
-        // potential future valid email check but right now i dont care lol
-
-        // make sure username is unique
-        // check if there is a user with that username
-        // if empty then valid
+        // check if the old password is correct
         axios.get("/CheckPassword", {params: {id: localStorage.getItem('currId')}}).then(response => {
             var listItems = response.data[0].password;
             console.log(listItems);
             if (listItems == oldpassword){
+                //update the password from the database
                 axios.post("/UpdatePassword", { id: localStorage.getItem('currId'), password: newpassword}).then(response => {
                     console.log("password updated");
         
-                    // then set global variable of logged in user
-                    //localStorage.setItem('currUser', username);
-                    //localStorage.setItem('currId', newid);
-        
-                    // and then also route to the dashboard
                     window.location.href = ROUTES.USERDASHBOARD;
                 });
             }else{

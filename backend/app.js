@@ -10,6 +10,7 @@ let connection = mysql.createConnection({
     user: "root",
     database: "vibehut",
     password: "cs348vibehut"
+
   });
 
 var cors = require('cors');
@@ -76,6 +77,7 @@ app.get("/checkUserExists", (req, res) => {
     });
 });
 
+// query to check the old password
 app.get('/CheckPassword', (req, res) => {
     var id = req.query.id;
     var querystring = "SELECT password FROM users WHERE userId='" + id + "'";
@@ -90,6 +92,7 @@ app.get('/CheckPassword', (req, res) => {
     });
 });
 
+// query to update the password in the database
 app.post('/UpdatePassword', (req, res) => {
     var id = req.body.id;
     var password = req.body.password;
@@ -104,6 +107,7 @@ app.post('/UpdatePassword', (req, res) => {
     res.end("password updated");
 });
 
+// query to update the username in the database
 app.post('/UpdateUsername', (req, res) => {
     var id = req.body.id;
     var username = req.body.username;
@@ -117,6 +121,64 @@ app.post('/UpdateUsername', (req, res) => {
     });
     res.end("username updated");
 });
+
+// query to delete user from the users table
+app.post('/DeleteAccount', (req, res) => {
+    var id = req.body.id;
+    var querystring = "DELETE FROM users WHERE userId='" + id + "'";
+    console.log(querystring);
+    connection.query(  querystring, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+    });
+    res.end("account deleted");
+});
+
+// query to delete user from the favebooks table
+app.post('/DeleteAccountBooks', (req, res) => {
+    var id = req.body.id;
+    var querystring = "DELETE FROM favebooks WHERE userId='" + id + "'";
+    console.log(querystring);
+    connection.query(  querystring, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+    });
+    res.end("favebooks deleted");
+});
+
+// query to delete user from the favemovies table
+app.post('/DeleteAccountMovies', (req, res) => {
+    var id = req.body.id;
+    var querystring = "DELETE FROM favemovies WHERE userId='" + id + "'";
+    console.log(querystring);
+    connection.query(  querystring, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+    });
+    res.end("favemovies deleted");
+});
+
+// query to delete user from the playlists table
+app.post('/DeleteAccountSongs', (req, res) => {
+    var id = req.body.id;
+    var querystring = "DELETE FROM playlists WHERE userId='" + id + "'";
+    console.log(querystring);
+    connection.query(  querystring, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+    });
+    res.end("playlists deleted");
+});
+
+
 
 // query to log user in database
 app.get("/login", (req, res) => {

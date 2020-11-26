@@ -6,6 +6,7 @@ import UpdateP from './updatep';
 import UpdateU from './updateu';
 import Logout from './logout';
 import AdminPass from './adminpass';
+import DeleteAcc from './DeleteAcc';
 
 const settings = () => {
 
@@ -31,6 +32,7 @@ const settings = () => {
 
         <h4>Activate Admin Account</h4>
         <AdminPass/>
+        <DeleteAcc /> 
     
         <br></br>
         <br></br>

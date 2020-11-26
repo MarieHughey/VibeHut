@@ -11,7 +11,7 @@ class UpdateU extends Component {
       this.state = {
           username:''
       };
-      
+
       this.keyPressUser = this.keyPressUser.bind(this);
     }
 
@@ -30,20 +30,9 @@ class UpdateU extends Component {
 
         console.log("username: " + username);
 
-        // potential future valid email check but right now i dont care lol
-
-        // make sure username is unique
-        // check if there is a user with that username
-        // if empty then valid
-        
+        // Update the username in the database
         axios.post("/UpdateUsername", { id: localStorage.getItem('currId'), username: username}).then(response => {
             console.log("username updated");
-
-            // then set global variable of logged in user
-            //localStorage.setItem('currUser', username);
-            //localStorage.setItem('currId', newid);
-
-            // and then also route to the dashboard
             window.location.href = ROUTES.USERDASHBOARD;
         });
     
