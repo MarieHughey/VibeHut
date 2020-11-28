@@ -20,6 +20,7 @@ export default class Playlists extends Component {
             const listItems = response.data.map((d) => <li style={{listStyle: "none"}} key={d.playlist_name}>{d.playlist_name}</li>);
             const playlistIds = response.data.map((d) => <li key={d.playlist_id}>{d.playlist_id}</li>)
 
+            userplaylists = [];
             for(let i = 0; i < listItems.length; i++)
             {
                 var playlistid = playlistIds[i].key;

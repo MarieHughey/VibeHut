@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Popup from "reactjs-popup";
+//import Popup from "reactjs-popup";
 import * as ROUTES from '../../constants/routes';
 import axios from "axios";
 import { Link, withRouter } from 'react-router-dom';
