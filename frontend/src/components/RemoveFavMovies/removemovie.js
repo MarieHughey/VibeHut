@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
+import * as ROUTES from '../../constants/routes';
 axios.defaults.baseURL = "http://localhost:5000";
 
 export default class RemoveMovie extends Component {
@@ -14,7 +15,7 @@ export default class RemoveMovie extends Component {
 
     handleChange = (event) => {
         this.setState({ 
-            movieName: event.target.value 
+            moviename: event.target.value 
         });
     }
 
@@ -26,22 +27,24 @@ export default class RemoveMovie extends Component {
         });
 
         //Delete the movie from the users favorite movie database
-        axios.get("/checkMovieExists", { params: {toMatch: deleteMovie}}).then(response => {
-            const input = response.data.map((d) => <li key={d.movie_title}>{d.movie_title}<i>by {d.year_released}</i> </li>);
-
-            if(input.length==0) {
+        axios.get("/getMovieId", { params: {moviename: deleteMovie}}).then(response => {
+            if (response.data.length== 0) {
                 this.setState({
-                    movieErr: "Movie does not exist."
+                    movieErr: "Movie does not exist.",
+                    moviename: ""
                 });
             }
             else {
-                axios.post("/removefavemovies", {
-                    movieName: deleteMovie
+
+                var movieid = response.data[0].movie_id;
+                console.log(movieid);
+
+                axios.post("/removefavemovie", {
+                    movieid: movieid,
+                    user_id: localStorage.getItem("currId")
                 }).then(response => {
                     console.log("Deleted from favorites");
-                    this.setState({
-                        movieErr: "Movie deleted from favorites."
-                    });
+                    window.location.href = ROUTES.REMOVE_FAV_MOVIES;
                 })
             }
           });
@@ -65,23 +68,29 @@ export default class RemoveMovie extends Component {
     render() {
        return (
             <div>
-                <h2>Favorite Movies: </h2>
-                <p>{this.state.favemovies}</p>
-                <h2>Enter the movie you want to delete</h2>
+                <h1>Delete Favorite Movies</h1>
+                <br></br>
                 <br></br>
 
+
+                <h2>Favorite Movies: </h2>
+                <p>{this.state.favemovies}</p>
+                <br></br>
                 <input
                     name="tag"
                     type="text"
-                    placeholder="Enter the movie name that you would like to delete"
+                    placeholder="Enter the movie title to delete..."
                     style={{ width: "300px" }}
                     value={this.state.movieName}
                     onChange={this.handleChange}
                 />
                 <br></br>
+
                 <button color="black" onClick={() => this.keyPressUser()} id='search' size="small">
                     Delete!
-        </button>
+                </button>
+
+                <p className="text-danger">{this.state.movieErr}</p>
 
                 <br></br>
                 <br />

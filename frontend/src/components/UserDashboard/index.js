@@ -34,14 +34,14 @@ const userdashboard = () => {
     <h2><Link to={ROUTES.RECOMMENDATIONS}>find me something</Link></h2>
     <Faves/>
 
+    <h5>Want to remove one of your favorite movies or books?</h5>
+    <p><Link to={ROUTES.REMOVE_FAV_MOVIES}>Remove Fave Movie</Link></p>
+    <p><Link to={ROUTES.REMOVE_FAV_BOOKS}>Remove Fave Book</Link></p>
+
     <br></br>
 
-    <p>Don't see your favorite songs here? Help us out by adding them!</p>
+    <p>Not seeing your favorite songs showing up in playlists? Help us out by adding them!</p>
     <p><Link to={ROUTES.ADD_NEW_SONG}>add song</Link></p>
-
-    <h6>Want to remove one of your favorite movies or books?</h6>
-    <p><Link to={ROUTES.REMOVE_FAV_MOVIES}>Remove an existing favorite movie</Link></p>
-    <p><Link to={ROUTES.REMOVE_FAV_BOOKS}>Remove an existing favorite book</Link></p>
 
     <br></br>
         

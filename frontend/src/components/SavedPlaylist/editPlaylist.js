@@ -69,8 +69,10 @@ export default class EditPlaylist extends Component {
                 Edit Name
             </button>
 
+            <br></br>
+            <br></br>
             
-            <h3>Delete playlist ? This cannot be undone!</h3>
+            <h3>Delete Playlist? This cannot be undone!</h3>
             <button color="black" onClick={() => this.deletePlaylist()} id='delete' size="small">
                 Delete Playlist
             </button>

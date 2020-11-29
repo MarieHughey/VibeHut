@@ -162,10 +162,10 @@ class AddSong extends Component {
 
             // get the id to assign by looking at current length of songs
             var newid = 0;
-            axios.get("/getSongs").then(response => {
-                const listItemsAll = response.data.map((d) => <li key={d.song_title}>{d.song_title} <i>by {d.artist} </i></li>);
-                console.log(listItemsAll.length);
-                newid = listItemsAll.length + 1;
+            axios.get("/getMaxSongId").then(response => {
+                var listItemsAll = response.data[0].song_id;
+                console.log(listItemsAll);
+                var newid = listItemsAll + 1;
 
                 // now add the song to the songs database
                 axios.post("/addSong", {

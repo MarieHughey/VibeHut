@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
+import * as ROUTES from '../../constants/routes';
 axios.defaults.baseURL = "http://localhost:5000";
 
 export default class Faves extends Component {
@@ -35,8 +36,6 @@ export default class Faves extends Component {
 
                 <h2>Favorite Books: </h2>
                 <p>{this.state.favebooks}</p>
-
-                <br/>
 
             </div>
         );

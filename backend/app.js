@@ -50,7 +50,7 @@ app.post('/createAccount',(req, res) => {
 });
 
 
-// query to return all users
+// query to return max user id
 app.get("/getMaxId", (req, res) => {
     let userquery = `SELECT MAX(userId) as userId FROM users`;
     connection.query(userquery, (error, results, fields) => {
@@ -61,6 +61,31 @@ app.get("/getMaxId", (req, res) => {
         res.send(results);
     });
 });
+
+// query to return max mood id
+app.get("/getMaxMoodId", (req, res) => {
+    let moodquery = `SELECT MAX(mood_id) as moodId FROM moods`;
+    connection.query(moodquery, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
+// query to return max song id
+app.get("/getMaxSongId", (req, res) => {
+    let songquery = `SELECT MAX(song_id) as song_id FROM songs`;
+    connection.query(songquery, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
 
 // query to see if exact user exists in database
 app.get("/checkUserExists", (req, res) => {
@@ -76,6 +101,23 @@ app.get("/checkUserExists", (req, res) => {
         res.send(results);
     });
 });
+
+
+// query to see if exact mood exists in database
+app.get("/checkMoodExists", (req, res) => {
+    var mood_name = req.query.moodname;
+    var querystring = "SELECT * FROM moods WHERE mood_name='" + mood_name + "'";
+    console.log(querystring);
+    let usermatchquery = querystring;
+    connection.query(usermatchquery, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
 
 // query to check the old password
 app.get('/CheckPassword', (req, res) => {
@@ -121,6 +163,107 @@ app.post('/UpdateUsername', (req, res) => {
     });
     res.end("username updated");
 });
+
+
+// query to delete song
+app.post('/deleteSong', (req, res) => {
+    var id = req.body.id;
+    var querystring = "DELETE FROM songs WHERE song_id='" + id + "'";
+    console.log(querystring);
+    connection.query(  querystring, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+    });
+    res.end("song deleted");
+});
+
+// query to delete book mood relationships
+app.post('/deleteFromPlaylists', (req, res) => {
+    var id = req.body.id;
+    var querystring = "DELETE FROM playlistsongs WHERE song_id='" + id + "'";
+    console.log(querystring);
+    connection.query(  querystring, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+    });
+    res.end("deleted from playlists");
+});
+
+// query to delete song mood relationships
+app.post('/deleteSongMoods', (req, res) => {
+    var id = req.body.id;
+    var querystring = "DELETE FROM songmoods WHERE song_id='" + id + "'";
+    console.log(querystring);
+    connection.query(  querystring, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+    });
+    res.end("songmoods deleted");
+});
+
+
+// query to delete mood 
+app.post('/deleteMood', (req, res) => {
+    var id = req.body.id;
+    var querystring = "DELETE FROM moods WHERE mood_id='" + id + "'";
+    console.log(querystring);
+    connection.query(  querystring, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+    });
+    res.end("mood deleted");
+});
+
+// query to delete book mood relationships
+app.post('/deleteMoodBooks', (req, res) => {
+    var id = req.body.id;
+    var querystring = "DELETE FROM bookmoods WHERE mood_id='" + id + "'";
+    console.log(querystring);
+    connection.query(  querystring, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+    });
+    res.end("bookmoods deleted");
+});
+
+// query to delete movie mood relationships
+app.post('/deleteMoodMovies', (req, res) => {
+    var id = req.body.id;
+    var querystring = "DELETE FROM moviemoods WHERE mood_id='" + id + "'";
+    console.log(querystring);
+    connection.query(  querystring, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+    });
+    res.end("moviemoods deleted");
+});
+
+// query to delete mood song relationships
+app.post('/deleteMoodSongs', (req, res) => {
+    var id = req.body.id;
+    var querystring = "DELETE FROM songmoods WHERE mood_id='" + id + "'";
+    console.log(querystring);
+    connection.query(  querystring, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+    });
+    res.end("songmoods deleted");
+});
+
 
 // query to delete user from the users table
 app.post('/DeleteAccount', (req, res) => {
@@ -429,6 +572,21 @@ app.get("/getRecommendedMoviesForMovie", (req, res) => {
     });
 });
 
+// query to add a mood
+app.post('/addMood',(req, res) => {
+    var mood_name = req.body.moodname;
+    var mood_id = req.body.moodid;
+    console.log(req.body);
+    var querystring = "INSERT INTO moods (mood_name, mood_id) VALUES ('" + mood_name + "', " + mood_id + ")";
+    connection.query(  querystring, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+    });
+    res.end("added mood");
+});
+
 
 // query to add a song
 app.post('/addSong',(req, res) => {
@@ -545,6 +703,68 @@ app.post('/addBookMoods', (req, res) => {
     res.end("added book moods");
 })
 
+// query to get song id from mood name
+app.get('/getSongId', (req, res) => {
+    var songtitle = req.query.songname;
+    var artist = req.query.songartist;
+
+    var querystring = "SELECT song_id FROM songs WHERE song_title='" + songtitle + "' AND artist='" + artist + "'";
+    console.log(querystring);
+    connection.query(  querystring, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+})
+
+// query to get movie id from movie name
+app.get('/getMovieId', (req, res) => {
+    var moviename = req.query.moviename;
+
+    var querystring = "SELECT movie_id FROM movies WHERE movie_title='" + moviename + "'";
+    console.log(querystring);
+    connection.query(  querystring, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+})
+
+// query to get book id from book name
+app.get('/getBookId', (req, res) => {
+    var booktitle = req.query.booktitle;
+
+    var querystring = "SELECT book_id FROM books WHERE book_title='" + booktitle + "'";
+    console.log(querystring);
+    connection.query(  querystring, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+})
+
+
+// query to get mood id from mood name
+app.get('/getMoodId', (req, res) => {
+    var mood_name = req.query.moodname;
+
+    console.log(mood_name);
+    var querystring = "SELECT mood_id FROM moods WHERE mood_name='" + mood_name + "'";
+    console.log(querystring);
+    connection.query(  querystring, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+})
 
 // query to get mood id from mood name
 app.get('/getMoodIds', (req, res) => {
@@ -727,31 +947,33 @@ app.get("/getFaveMovies", (req, res) => {
 });
 
 // query to remove favorite movie
-app.get("/removefavemovies", (req, res) => {
-    var user_id = req.query.user_id;
-    var movieName = req.query.movieName;
-    var query = "DELETE FROM favemovies f WHERE movie_title LIKE '%'" + movieName + "%' AND user_id=" + '"user_id"'; 
+app.post("/removefavemovie", (req, res) => {
+    var user_id = req.body.user_id;
+    var movieid = req.body.movieid;
+    console.log(user_id);
+    console.log(movieid);
+    var query = "DELETE FROM favemovies WHERE movie_id='" + movieid + "' AND user_id='" + user_id + "'"; 
     connection.query(query, (error, results, fields) => {
         if (error) {
             return console.error(error.message);
         }
         console.log(results);
-        res.send(results);
     });
+    res.end("fave movie removed");
 });
 
 //query to remove favorite book
-app.get("/removefavebooks", (req, res) => {
-    var user_id = req.query.user_id;
-    var deleteBook = req.query.bookName;
-    var query = "DELETE FROM favebooks f WHERE book_title LIKE '%'" + deleteBook + "%' AND user_id=" + '"user_id"'; 
+app.post("/removefavebook", (req, res) => {
+    var user_id = req.body.user_id;
+    var bookid = req.body.bookid;
+    var query = "DELETE FROM favebooks WHERE book_id='" + bookid + "' AND user_id='" + user_id + "'"; 
     connection.query(query, (error, results, fields) => {
         if (error) {
             return console.error(error.message);
         }
         console.log(results);
-        res.send(results);
     });
+    res.end("fave book removed");
 });
 
 // query to get playlists for user

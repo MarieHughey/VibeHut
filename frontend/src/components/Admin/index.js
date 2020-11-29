@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import AppIcon from '../../images/admin-logo.png';
 import * as ROUTES from '../../constants/routes';
+import AddMood from './addmood.js';
+import DeleteMood from './deletemood.js';
+import DeleteSong from './deletesong.js';
 
 const admin = () => {
 
@@ -15,19 +18,16 @@ const admin = () => {
 
     <br></br>
 
-    <h4>CREATE DELETE SONG LINK HERE</h4>
+    <h4>Delete a Song!</h4>
+    <DeleteSong/>
     <br></br>
 
-    <h4>CREATE DELETE MOVIE LINK HERE</h4>
+    <h4>Delete a Mood!</h4>
+    <DeleteMood/>
     <br></br>
 
-    <h4>CREATE DELETE BOOK LINK HERE</h4>
-    <br></br>
-
-    <h4>CREATE DELETE MOOD LINK HERE</h4>
-    <br></br>
-
-    <h4>CREATE ADD MOOD LINK HERE</h4>
+    <h4>Add a Mood!</h4>
+    <AddMood/>
 
     <br></br>
     <br></br>
