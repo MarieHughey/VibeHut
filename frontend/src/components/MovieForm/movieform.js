@@ -235,7 +235,7 @@ class AddMovie extends Component {
         <MoodCheckboxes/>
         <br></br>
 
-        <button color="black" onClick={() => this.keyPressUser()} id='search' size="small">
+        <button color="black" onClick={() => this.keyPressUser()} id='search' size="small">
             Add Movie!
         </button>
 

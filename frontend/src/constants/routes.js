@@ -14,3 +14,5 @@ export const PLAYLISTFORM = '/generateplaylist/playlistform';
 export const SETTINGS = '/settings';
 export const ADMIN = '/admin';
 export const SAVEDPLAYLIST = '/savedplaylist';
+export const REMOVE_FAV_MOVIES = '/removefavmovies';
+export const REMOVE_FAV_BOOKS = '/removefavbooks';

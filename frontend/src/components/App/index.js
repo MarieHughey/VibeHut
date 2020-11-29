@@ -15,6 +15,8 @@ import BookForm from '../BookForm';
 import Settings from '../Settings';
 import Admin from '../Admin';
 import savedPlaylist from '../SavedPlaylist';
+import removefavmovies from '../RemoveFavMovies';
+import removefavbooks from '../RemoveFavBooks';
 
 /*
 function requireAuth(nextState, replace, next) {
@@ -48,6 +50,8 @@ const App = () => (
     <Route path={ROUTES.SETTINGS} component={Settings} />
     <Route path={ROUTES.ADMIN} component={Admin} />
     <Route path={ROUTES.SAVEDPLAYLIST} component={savedPlaylist} onEnter={requireAuth}/>
+    <Route path={ROUTES.REMOVE_FAV_MOVIES} component={removefavmovies} onEnter={requireAuth}/>
+    <Route path={ROUTES.REMOVE_FAV_BOOKS} component={removefavbooks} onEnter={requireAuth}/>
     </div>
   </Router>
   

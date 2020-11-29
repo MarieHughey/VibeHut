@@ -25,6 +25,7 @@ class MakeSearch extends Component {
       this.keyPressUser = this.keyPressUser.bind(this);
       this.movieItemPress = this.movieItemPress.bind(this);
       this.bookItemPress = this.bookItemPress.bind(this);
+
     }
 
     
@@ -57,6 +58,14 @@ class MakeSearch extends Component {
         this.setState({
           gotRecommended: true
         });
+    }
+
+    keyMovieRemover(e) {
+      console.log("Reached Movie Remover");
+    }
+
+    keyBookRemover(e) {
+      console.log("Reached Book Remover");
     }
 
     faveMoviePress(e) {
@@ -248,6 +257,9 @@ class MakeSearch extends Component {
         <h6>Don't see your favorite movie or book?</h6>
         <h6><Link to={ROUTES.MOVIEFORM}>Add movie here!</Link></h6>
         <h6><Link to={ROUTES.BOOKFORM}>Add book here!</Link></h6>
+
+        <br></br>
+        <br></br>
 
         <div id="errorMessage"></div>
 

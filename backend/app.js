@@ -726,6 +726,34 @@ app.get("/getFaveMovies", (req, res) => {
     });
 });
 
+// query to remove favorite movie
+app.get("/removefavemovies", (req, res) => {
+    var user_id = req.query.user_id;
+    var movieName = req.query.movieName;
+    var query = "DELETE FROM favemovies f WHERE movie_title LIKE '%'" + movieName + "%' AND user_id=" + '"user_id"'; 
+    connection.query(query, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
+//query to remove favorite book
+app.get("/removefavebooks", (req, res) => {
+    var user_id = req.query.user_id;
+    var deleteBook = req.query.bookName;
+    var query = "DELETE FROM favebooks f WHERE book_title LIKE '%'" + deleteBook + "%' AND user_id=" + '"user_id"'; 
+    connection.query(query, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
 // query to get playlists for user
 app.get("/getPlaylistsForUser", (req, res) => {
     var user_id = req.query.userid;
