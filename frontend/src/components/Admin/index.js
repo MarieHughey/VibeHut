@@ -5,6 +5,7 @@ import * as ROUTES from '../../constants/routes';
 import AddMood from './addmood.js';
 import DeleteMood from './deletemood.js';
 import DeleteSong from './deletesong.js';
+import AdminReport from './adminReport';
 
 const admin = () => {
 
@@ -28,6 +29,9 @@ const admin = () => {
 
     <h4>Add a Mood!</h4>
     <AddMood/>
+
+    <h4>See Report</h4>
+    <AdminReport/>
 
     <br></br>
     <br></br>
