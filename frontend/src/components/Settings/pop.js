@@ -43,9 +43,13 @@ class Pop extends Component{
             axios.post("/DeleteAccountMovies", { id: localStorage.getItem('currId')}).then(response => {
                 console.log("favemovies deleted");
             });
+            axios.post("/DeleteAccountPlaylistSongs", { id: localStorage.getItem('currId')}).then(response => {
+                console.log("playlistsongs deleted");
+            });
             axios.post("/DeleteAccountSongs", { id: localStorage.getItem('currId')}).then(response => {
                 console.log("playlists deleted");
             });
+        
             console.log("account deleted");
             localStorage.setItem('currUser', "");
             localStorage.setItem('currId', "");
