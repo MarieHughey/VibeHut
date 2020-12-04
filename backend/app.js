@@ -1342,4 +1342,44 @@ app.post('/updatePlaylistName', (req, res) => {
     res.end("added song to playlist");
 })
 
+// query to get number of playlists each user have
+app.get("/getNumPlaylistsForAllUser", (req, res) => {
+    var querystring = "SELECT p.user_id, u.username, COUNT(p.playlist_id) AS numPlaylists FROM playlists "
+                      + "p JOIN users u ON (u.userId = p.user_id) GROUP BY p.user_id , u.username";
+    connection.query(querystring, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
+// query to get number of fave books each user have
+app.get("/getNumFavBooks", (req, res) => {
+    var querystring = "SELECT fb.user_id, u.username, COUNT(fb.book_id) AS numFavBooks FROM favebooks fb JOIN users "
+                      + "u ON (u.userId = fb.user_id) GROUP BY fb.user_id , u.username";
+    connection.query(querystring, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
+// query to get number of fave movies each user have
+app.get("/getNumFavMovies", (req, res) => {
+
+    var querystring = "SELECT fm.user_id, u.username, COUNT(fm.movie_id) AS numFavMovies FROM favemovies fm JOIN users u "
+                      + "ON (u.userId = fm.user_id) GROUP BY fm.user_id , u.username";
+    connection.query(querystring, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
 app.listen(port, () => console.log(`app listening on port ${port}`));
