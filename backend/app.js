@@ -39,8 +39,8 @@ app.post('/createAccount',(req, res) => {
     var password = req.body.password;
     var userId = req.body.userId;
     console.log(req.body);
-    var querystring = "INSERT INTO users (userId, username, email, password, isAdmin) VALUES (" + userId + ", '" + username + "', '" + email + "', '" + password + "', 0)";
-    connection.query(  querystring, (error, results, fields) => {
+    //var querystring = "INSERT INTO users (userId, username, email, password, isAdmin) VALUES (" + userId + ", '" + username + "', '" + email + "', '" + password + "', 0)";
+    connection.query(  "INSERT INTO users (userId, username, email, password, isAdmin) VALUES (?, ?, ?, ?, 0)", [userId, username, email, password], (error, results, fields) => {
         if (error) {
             return console.error(error.message);
         }
@@ -92,8 +92,8 @@ app.get("/checkUserExists", (req, res) => {
     var username = req.query.username;
     var querystring = "SELECT * FROM users WHERE username='" + username + "'";
     console.log(querystring);
-    let usermatchquery = querystring;
-    connection.query(usermatchquery, (error, results, fields) => {
+    //let usermatchquery = querystring;
+    connection.query("SELECT * FROM users WHERE username=?", [username], (error, results, fields) => {
         if (error) {
             return console.error(error.message);
         }
@@ -108,8 +108,8 @@ app.get("/checkMoodExists", (req, res) => {
     var mood_name = req.query.moodname;
     var querystring = "SELECT * FROM moods WHERE mood_name='" + mood_name + "'";
     console.log(querystring);
-    let usermatchquery = querystring;
-    connection.query(usermatchquery, (error, results, fields) => {
+    //let usermatchquery = querystring;
+    connection.query("SELECT * FROM moods WHERE mood_name=?", [mood_name], (error, results, fields) => {
         if (error) {
             return console.error(error.message);
         }
@@ -124,8 +124,8 @@ app.get('/CheckPassword', (req, res) => {
     var id = req.query.id;
     var querystring = "SELECT password FROM users WHERE userId='" + id + "'";
     console.log(querystring);
-    let usermatchquery = querystring;
-    connection.query(usermatchquery, (error, results, fields) => {
+    //let usermatchquery = querystring;
+    connection.query("SELECT password FROM users WHERE userId=?", [id], (error, results, fields) => {
         if (error) {
             return console.error(error.message);
         }
@@ -140,7 +140,7 @@ app.post('/UpdatePassword', (req, res) => {
     var password = req.body.password;
     var querystring = "UPDATE users SET password ='" + password + "'WHERE userId='" + id + "'";
     console.log(querystring);
-    connection.query(  querystring, (error, results, fields) => {
+    connection.query( "UPDATE users SET password =? WHERE userId=?", [password, id], (error, results, fields) => {
         if (error) {
             return console.error(error.message);
         }
@@ -155,7 +155,7 @@ app.post('/UpdateUsername', (req, res) => {
     var username = req.body.username;
     var querystring = "UPDATE users SET username ='" + username + "'WHERE userId='" + id + "'";
     console.log(querystring);
-    connection.query(  querystring, (error, results, fields) => {
+    connection.query("UPDATE users SET username =? WHERE userId=?", [username, id],(error, results, fields) => {
         if (error) {
             return console.error(error.message);
         }
@@ -441,8 +441,8 @@ app.get("/login", (req, res) => {
     var password = req.query.password;
     var querystring = "SELECT * FROM users WHERE username='" + username + "' AND password='" + password + "'";
     console.log(querystring);
-    let usermatchquery = querystring;
-    connection.query(usermatchquery, (error, results, fields) => {
+    //let usermatchquery = querystring;
+    connection.query("SELECT * FROM users WHERE username=? AND password=?", [username, password], (error, results, fields) => {
         if (error) {
             return console.error(error.message);
         }
@@ -604,8 +604,8 @@ app.get("/getMatchingMovies", (req, res) => {
 app.get("/getPlaylistForMovie", (req, res) => {
     var movieId = req.query.movieId;
     var querystring = "SELECT DISTINCT s.song_id, s.song_title, s.artist FROM movies m JOIN moviemoods mm ON m.movie_id=mm.movie_id JOIN songmoods sm ON sm.mood_id=mm.mood_id JOIN songs s ON sm.song_id=s.song_id WHERE m.movie_id=" + movieId;
-    let playlistquery = querystring;
-    connection.query(playlistquery, (error, results, fields) => {
+    //let playlistquery = querystring;
+    connection.query("SELECT DISTINCT s.song_id, s.song_title, s.artist FROM movies m JOIN moviemoods mm ON m.movie_id=mm.movie_id JOIN songmoods sm ON sm.mood_id=mm.mood_id JOIN songs s ON sm.song_id=s.song_id WHERE m.movie_id=?", [movieId], (error, results, fields) => {
         if (error) {
             return console.error(error.message);
         }
@@ -618,8 +618,8 @@ app.get("/getPlaylistForMovie", (req, res) => {
 app.get("/getPlaylistForBook", (req, res) => {
     var bookId = req.query.bookId;
     var querystring = "SELECT DISTINCT s.song_id, s.song_title, s.artist FROM books b JOIN bookmoods bm ON b.book_id=bm.book_id JOIN songmoods sm ON sm.mood_id=bm.mood_id JOIN songs s ON sm.song_id=s.song_id WHERE b.book_id=" + bookId;
-    let playlistquery = querystring;
-    connection.query(playlistquery, (error, results, fields) => {
+    //let playlistquery = querystring;
+    connection.query("SELECT DISTINCT s.song_id, s.song_title, s.artist FROM books b JOIN bookmoods bm ON b.book_id=bm.book_id JOIN songmoods sm ON sm.mood_id=bm.mood_id JOIN songs s ON sm.song_id=s.song_id WHERE b.book_id=?", [bookId], (error, results, fields) => {
         if (error) {
             return console.error(error.message);
         }
@@ -632,8 +632,8 @@ app.get("/getPlaylistForBook", (req, res) => {
 app.get("/getRecommendedBooksForBook", (req, res) => {
     var bookId = req.query.bookId;
     var querystring = "SELECT DISTINCT b2.book_title, b2.author, b2.book_id FROM books b JOIN bookmoods bm ON b.book_id=bm.book_id JOIN bookmoods bm2 ON bm2.mood_id=bm.mood_id JOIN books b2 ON b2.book_id=bm2.book_id WHERE b.book_id=" + bookId + " AND b2.book_id!=" + bookId;
-    let playlistquery = querystring;
-    connection.query(playlistquery, (error, results, fields) => {
+    //let playlistquery = querystring;
+    connection.query("SELECT DISTINCT b2.book_title, b2.author, b2.book_id FROM books b JOIN bookmoods bm ON b.book_id=bm.book_id JOIN bookmoods bm2 ON bm2.mood_id=bm.mood_id JOIN books b2 ON b2.book_id=bm2.book_id WHERE b.book_id=? AND b2.book_id != ?", [bookId, bookId], (error, results, fields) => {
         if (error) {
             return console.error(error.message);
         }
@@ -646,8 +646,8 @@ app.get("/getRecommendedBooksForBook", (req, res) => {
 app.get("/getRecommendedMoviesForBook", (req, res) => {
     var bookId = req.query.bookId;
     var querystring = "SELECT DISTINCT m.movie_title, m.year_released, m.movie_id FROM books b JOIN bookmoods bm ON b.book_id=bm.book_id JOIN moviemoods mm ON mm.mood_id=bm.mood_id JOIN movies m ON mm.movie_id=m.movie_id WHERE b.book_id=" + bookId;
-    let playlistquery = querystring;
-    connection.query(playlistquery, (error, results, fields) => {
+    //let playlistquery = querystring;
+    connection.query("SELECT DISTINCT m.movie_title, m.year_released, m.movie_id FROM books b JOIN bookmoods bm ON b.book_id=bm.book_id JOIN moviemoods mm ON mm.mood_id=bm.mood_id JOIN movies m ON mm.movie_id=m.movie_id WHERE b.book_id=?", [bookId], (error, results, fields) => {
         if (error) {
             return console.error(error.message);
         }
@@ -660,8 +660,8 @@ app.get("/getRecommendedMoviesForBook", (req, res) => {
 app.get("/getRecommendedBooksForMovie", (req, res) => {
     var movieId = req.query.movieId;
     var querystring = "SELECT DISTINCT b.book_title, b.author, b.book_id FROM movies m JOIN moviemoods mm ON m.movie_id=mm.movie_id JOIN bookmoods bm ON bm.mood_id=mm.mood_id JOIN books b ON b.book_id=bm.book_id WHERE m.movie_id=" + movieId;    
-    let playlistquery = querystring;
-    connection.query(playlistquery, (error, results, fields) => {
+    //let playlistquery = querystring;
+    connection.query("SELECT DISTINCT b.book_title, b.author, b.book_id FROM movies m JOIN moviemoods mm ON m.movie_id=mm.movie_id JOIN bookmoods bm ON bm.mood_id=mm.mood_id JOIN books b ON b.book_id=bm.book_id WHERE m.movie_id=?", [movieId], (error, results, fields) => {
         if (error) {
             return console.error(error.message);
         }
@@ -674,8 +674,8 @@ app.get("/getRecommendedBooksForMovie", (req, res) => {
 app.get("/getRecommendedMoviesForMovie", (req, res) => {
     var movieId = req.query.movieId;
     var querystring = "SELECT DISTINCT m2.movie_title, m2.year_released, m2.movie_id FROM movies m JOIN moviemoods mm ON m.movie_id=mm.movie_id JOIN moviemoods mm2 ON mm2.mood_id=mm.mood_id JOIN movies m2 ON m2.movie_id=mm2.movie_id WHERE m.movie_id=" + movieId + " AND m2.movie_id!=" + movieId;
-       let playlistquery = querystring;
-    connection.query(playlistquery, (error, results, fields) => {
+    //let playlistquery = querystring;
+    connection.query("SELECT DISTINCT m2.movie_title, m2.year_released, m2.movie_id FROM movies m JOIN moviemoods mm ON m.movie_id=mm.movie_id JOIN moviemoods mm2 ON mm2.mood_id=mm.mood_id JOIN movies m2 ON m2.movie_id=mm2.movie_id WHERE m.movie_id = ? AND m2.movie_id != ?", [movieId, movieId], (error, results, fields) => {
         if (error) {
             return console.error(error.message);
         }
@@ -1017,9 +1017,9 @@ app.get('/getMoodIds', (req, res) => {
 // query to get recommended books for book
 app.get("/getRecommendedBooksForBook", (req, res) => {
     var bookId = req.query.bookId;
-    var querystring = "SELECT DISTINCT b2.book_title, b2.author FROM books b JOIN bookmoods bm ON b.book_id=bm.book_id JOIN bookmoods bm2 ON bm2.mood_id=bm.mood_id JOIN books b2 ON b2.book_id=bm2.book_id WHERE b.book_id=" + bookId + " AND b2.book_id!=" + bookId;
-    let playlistquery = querystring;
-    connection.query(playlistquery, (error, results, fields) => {
+    //var querystring = "SELECT DISTINCT b2.book_title, b2.author FROM books b JOIN bookmoods bm ON b.book_id=bm.book_id JOIN bookmoods bm2 ON bm2.mood_id=bm.mood_id JOIN books b2 ON b2.book_id=bm2.book_id WHERE b.book_id=" + bookId + " AND b2.book_id!=" + bookId;
+    //let playlistquery = querystring;
+    connection.query("SELECT DISTINCT b2.book_title, b2.author FROM books b JOIN bookmoods bm ON b.book_id=bm.book_id JOIN bookmoods bm2 ON bm2.mood_id=bm.mood_id JOIN books b2 ON b2.book_id=bm2.book_id WHERE b.book_id = ? AND b2.book_id != ?", [bookId, bookId], (error, results, fields) => {
         if (error) {
             return console.error(error.message);
         }
@@ -1031,9 +1031,9 @@ app.get("/getRecommendedBooksForBook", (req, res) => {
 // query to get recommended movies for book
 app.get("/getRecommendedMoviesForBook", (req, res) => {
     var bookId = req.query.bookId;
-    var querystring = "SELECT DISTINCT m.movie_title, m.year_released FROM books b JOIN bookmoods bm ON b.book_id=bm.book_id JOIN moviemoods mm ON mm.mood_id=bm.mood_id JOIN movies m ON mm.movie_id=m.movie_id WHERE b.book_id=" + bookId;
-    let playlistquery = querystring;
-    connection.query(playlistquery, (error, results, fields) => {
+    //var querystring = "SELECT DISTINCT m.movie_title, m.year_released FROM books b JOIN bookmoods bm ON b.book_id=bm.book_id JOIN moviemoods mm ON mm.mood_id=bm.mood_id JOIN movies m ON mm.movie_id=m.movie_id WHERE b.book_id=" + bookId;
+    //let playlistquery = querystring;
+    connection.query("SELECT DISTINCT m.movie_title, m.year_released FROM books b JOIN bookmoods bm ON b.book_id=bm.book_id JOIN moviemoods mm ON mm.mood_id=bm.mood_id JOIN movies m ON mm.movie_id=m.movie_id WHERE b.book_id = ?", [bookId], (error, results, fields) => {
         if (error) {
             return console.error(error.message);
         }
@@ -1045,9 +1045,9 @@ app.get("/getRecommendedMoviesForBook", (req, res) => {
 // query to get recommended books for movie
 app.get("/getRecommendedBooksForMovie", (req, res) => {
     var movieId = req.query.movieId;
-    var querystring = "SELECT DISTINCT b.book_title, b.author FROM movies m JOIN moviemoods mm ON m.movie_id=mm.movie_id JOIN bookmoods bm ON bm.mood_id=mm.mood_id JOIN books b ON b.book_id=bm.book_id WHERE m.movie_id=" + movieId;    
-    let playlistquery = querystring;
-    connection.query(playlistquery, (error, results, fields) => {
+    //var querystring = "SELECT DISTINCT b.book_title, b.author FROM movies m JOIN moviemoods mm ON m.movie_id=mm.movie_id JOIN bookmoods bm ON bm.mood_id=mm.mood_id JOIN books b ON b.book_id=bm.book_id WHERE m.movie_id=" + movieId;    
+    //let playlistquery = querystring;
+    connection.query("SELECT DISTINCT b.book_title, b.author FROM movies m JOIN moviemoods mm ON m.movie_id=mm.movie_id JOIN bookmoods bm ON bm.mood_id=mm.mood_id JOIN books b ON b.book_id=bm.book_id WHERE m.movie_id = ?", [movieId], (error, results, fields) => {
         if (error) {
             return console.error(error.message);
         }
@@ -1059,9 +1059,9 @@ app.get("/getRecommendedBooksForMovie", (req, res) => {
 // query to get recommended movies for movie
 app.get("/getRecommendedMoviesForMovie", (req, res) => {
     var movieId = req.query.movieId;
-    var querystring = "SELECT DISTINCT m2.movie_title, m2.year_released FROM movies m JOIN moviemoods mm ON m.movie_id=mm.movie_id JOIN moviemoods mm2 ON mm2.mood_id=mm.mood_id JOIN movies m2 ON m2.movie_id=mm2.movie_id WHERE m.movie_id=" + movieId + " AND m2.movie_id!=" + movieId;
-       let playlistquery = querystring;
-    connection.query(playlistquery, (error, results, fields) => {
+    //var querystring = "SELECT DISTINCT m2.movie_title, m2.year_released FROM movies m JOIN moviemoods mm ON m.movie_id=mm.movie_id JOIN moviemoods mm2 ON mm2.mood_id=mm.mood_id JOIN movies m2 ON m2.movie_id=mm2.movie_id WHERE m.movie_id=" + movieId + " AND m2.movie_id!=" + movieId;
+    //let playlistquery = querystring;
+    connection.query("SELECT DISTINCT m2.movie_title, m2.year_released FROM movies m JOIN moviemoods mm ON m.movie_id=mm.movie_id JOIN moviemoods mm2 ON mm2.mood_id=mm.mood_id JOIN movies m2 ON m2.movie_id=mm2.movie_id WHERE m.movie_id = ? AND m2.movie_id != ?", [movieId, movieId], (error, results, fields) => {
         if (error) {
             return console.error(error.message);
         }
@@ -1224,8 +1224,8 @@ app.get("/checkIfAdmin", (req, res) => {
     console.log(userId)
     var querystring = "SELECT * FROM users WHERE userId='" + userId + "' AND isAdmin=1";
     console.log(querystring);
-    let usermatchquery = querystring;
-    connection.query(usermatchquery, (error, results, fields) => {
+    //let usermatchquery = querystring;
+    connection.query("SELECT * FROM users WHERE userId = ? AND isAdmin = 1", [userId], (error, results, fields) => {
         if (error) {
             return console.error(error.message);
         }
@@ -1239,7 +1239,7 @@ app.post('/makeAdmin', (req, res) => {
     var id = req.body.id;
     var querystring = "UPDATE users SET isAdmin=1 WHERE userId='" + id + "'";
     console.log(querystring);
-    connection.query(  querystring, (error, results, fields) => {
+    connection.query(  "UPDATE users SET isAdmin=1 WHERE userId=?", [id], (error, results, fields) => {
         if (error) {
             return console.error(error.message);
         }
