@@ -51,8 +51,8 @@ sequelize
 
 // define models here
 var users = sequelize.define('users', {
-    userId: {type: Sequelize.INTEGER, primaryKey: true},
-    username: Sequelize.STRING,
+    userId: Sequelize.INTEGER,
+    username: {type: Sequelize.STRING, primaryKey: true},
     email: Sequelize.INTEGER,
     password: Sequelize.STRING,
     isAdmin: Sequelize.INTEGER
@@ -116,50 +116,70 @@ app.get("/getMaxId", (req, res) => {
 
 // query to return max mood id
 app.get("/getMaxMoodId", (req, res) => {
-    let moodquery = `SELECT MAX(mood_id) as moodId FROM moods`;
-    connection.query(moodquery, (error, results, fields) => {
-        if (error) {
-            return console.error(error.message);
-        }
-        console.log(results);
-        res.send(results);
-    });
+    // let moodquery = `SELECT MAX(mood_id) as moodId FROM moods`;
+    // connection.query(moodquery, (error, results, fields) => {
+    //     if (error) {
+    //         return console.error(error.message);
+    //     }
+    //     console.log(results);
+    //     res.send(results);
+    // });
+    sequelize.query("SELECT MAX(mood_id) as moodId FROM moods", { type: sequelize.QueryTypes.SELECT })
+    .then(function(result) {
+        console.log(result);
+        res.send(result);
+    })
 });
 
 // query to return max song id
 app.get("/getMaxSongId", (req, res) => {
-    let songquery = `SELECT MAX(song_id) as song_id FROM songs`;
-    connection.query(songquery, (error, results, fields) => {
-        if (error) {
-            return console.error(error.message);
-        }
-        console.log(results);
-        res.send(results);
-    });
+    // let songquery = `SELECT MAX(song_id) as song_id FROM songs`;
+    // connection.query(songquery, (error, results, fields) => {
+    //     if (error) {
+    //         return console.error(error.message);
+    //     }
+    //     console.log(results);
+    //     res.send(results);
+    // });
+    sequelize.query("SELECT MAX(song_id) as song_id FROM songs", { type: sequelize.QueryTypes.SELECT })
+    .then(function(result) {
+        console.log(result);
+        res.send(result);
+    })
 });
 
 // query to return max movie id
 app.get("/getMaxMovieId", (req, res) => {
-    let query = `SELECT MAX(movie_id) as movie_id FROM movies`;
-    connection.query(query, (error, results, fields) => {
-        if (error) {
-            return console.error(error.message);
-        }
-        console.log(results);
-        res.send(results);
-    });
+    // let query = `SELECT MAX(movie_id) as movie_id FROM movies`;
+    // connection.query(query, (error, results, fields) => {
+    //     if (error) {
+    //         return console.error(error.message);
+    //     }
+    //     console.log(results);
+    //     res.send(results);
+    // });
+    sequelize.query("SELECT MAX(movie_id) as movie_id FROM movies", { type: sequelize.QueryTypes.SELECT })
+    .then(function(result) {
+        console.log(result);
+        res.send(result);
+    })
 });
 
 // query to return max book id
 app.get("/getMaxBookId", (req, res) => {
-    let query = `SELECT MAX(book_id) as book_id FROM books`;
-    connection.query(query, (error, results, fields) => {
-        if (error) {
-            return console.error(error.message);
-        }
-        console.log(results);
-        res.send(results);
-    });
+    // let query = `SELECT MAX(book_id) as book_id FROM books`;
+    // connection.query(query, (error, results, fields) => {
+    //     if (error) {
+    //         return console.error(error.message);
+    //     }
+    //     console.log(results);
+    //     res.send(results);
+    // });
+    sequelize.query("SELECT MAX(book_id) as book_id FROM books", { type: sequelize.QueryTypes.SELECT })
+    .then(function(result) {
+        console.log(result);
+        res.send(result);
+    })
 });
 
 
@@ -170,90 +190,144 @@ app.get("/checkUserExists", (req, res) => {
     // console.log(querystring);
     //let usermatchquery = querystring;
 
-    connection.query("SELECT * FROM users WHERE username=?", [username], (error, results, fields) => {
-        if (error) {
-            return console.error(error.message);
-        }
-        console.log(results);
-        res.send(results);
-    });
+    // connection.query("SELECT * FROM users WHERE username=?", [username], (error, results, fields) => {
+    //     if (error) {
+    //         return console.error(error.message);
+    //     }
+    //     console.log(results);
+    //     res.send(results);
+    // });
+    sequelize.query("SELECT * FROM users WHERE username=?", 
+    {
+        replacements: [username],
+        type: sequelize.QueryTypes.SELECT
+    })
+    .then(function(result) {
+        console.log(result);
+        res.send(result);
+    })
 });
 
 
 // query to see if exact mood exists in database
 app.get("/checkMoodExists", (req, res) => {
     var mood_name = req.query.moodname;
-    var querystring = "SELECT * FROM moods WHERE mood_name='" + mood_name + "'";
-    console.log(querystring);
-    //let usermatchquery = querystring;
-    connection.query("SELECT * FROM moods WHERE mood_name=?", [mood_name], (error, results, fields) => {
-        if (error) {
-            return console.error(error.message);
-        }
-        console.log(results);
-        res.send(results);
-    });
+    // var querystring = "SELECT * FROM moods WHERE mood_name='" + mood_name + "'";
+    // console.log(querystring);
+    // //let usermatchquery = querystring;
+    // connection.query("SELECT * FROM moods WHERE mood_name=?", [mood_name], (error, results, fields) => {
+    //     if (error) {
+    //         return console.error(error.message);
+    //     }
+    //     console.log(results);
+    //     res.send(results);
+    // });
+    sequelize.query("SELECT * FROM moods WHERE mood_name=?", 
+    {
+        replacements: [mood_name],
+        type: sequelize.QueryTypes.SELECT
+    })
+    .then(function(result) {
+        console.log(result);
+        res.send(result);
+    })
 });
 
 
 // query to check the old password
 app.get('/CheckPassword', (req, res) => {
     var id = req.query.id;
-    var querystring = "SELECT password FROM users WHERE userId='" + id + "'";
-    console.log(querystring);
-    //let usermatchquery = querystring;
-    connection.query("SELECT password FROM users WHERE userId=?", [id], (error, results, fields) => {
-        if (error) {
-            return console.error(error.message);
-        }
-        console.log(results);
-        res.send(results);
-    });
+    // var querystring = "SELECT password FROM users WHERE userId='" + id + "'";
+    // console.log(querystring);
+    // //let usermatchquery = querystring;
+    // connection.query("SELECT password FROM users WHERE userId=?", [id], (error, results, fields) => {
+    //     if (error) {
+    //         return console.error(error.message);
+    //     }
+    //     console.log(results);
+    //     res.send(results);
+    // });
+    sequelize.query("SELECT password FROM users WHERE userId=?", 
+    {
+        replacements: [id],
+        type: sequelize.QueryTypes.SELECT
+    })
+    .then(function(result) {
+        console.log(result);
+        res.send(result);
+    })
 });
 
 // query to update the password in the database
 app.post('/UpdatePassword', (req, res) => {
     var id = req.body.id;
     var password = req.body.password;
-    var querystring = "UPDATE users SET password ='" + password + "'WHERE userId='" + id + "'";
-    console.log(querystring);
-    connection.query( "UPDATE users SET password =? WHERE userId=?", [password, id], (error, results, fields) => {
-        if (error) {
-            return console.error(error.message);
-        }
-        console.log(results);
-    });
-    res.end("password updated");
+    // var querystring = "UPDATE users SET password ='" + password + "'WHERE userId='" + id + "'";
+    // console.log(querystring);
+    // connection.query( "UPDATE users SET password =? WHERE userId=?", [password, id], (error, results, fields) => {
+    //     if (error) {
+    //         return console.error(error.message);
+    //     }
+    //     console.log(results);
+    // });
+    sequelize.query("UPDATE users SET password =? WHERE userId=?", 
+    {
+        replacements: [password, id],
+        type: sequelize.QueryTypes.UPDATE
+    })
+    .then(function(result) {
+        console.log(result);
+        res.send(result);
+    })
+    // res.end("password updated");
 });
 
 // query to update the username in the database
 app.post('/UpdateUsername', (req, res) => {
     var id = req.body.id;
     var username = req.body.username;
-    var querystring = "UPDATE users SET username ='" + username + "'WHERE userId='" + id + "'";
-    console.log(querystring);
-    connection.query("UPDATE users SET username =? WHERE userId=?", [username, id],(error, results, fields) => {
-        if (error) {
-            return console.error(error.message);
-        }
-        console.log(results);
-    });
-    res.end("username updated");
+    // var querystring = "UPDATE users SET username ='" + username + "'WHERE userId='" + id + "'";
+    // console.log(querystring);
+    // connection.query("UPDATE users SET username =? WHERE userId=?", [username, id],(error, results, fields) => {
+    //     if (error) {
+    //         return console.error(error.message);
+    //     }
+    //     console.log(results);
+    // });
+    sequelize.query("UPDATE users SET username =? WHERE userId=?", 
+    {
+        replacements: [username, id],
+        type: sequelize.QueryTypes.UPDATE
+    })
+    .then(function(result) {
+        console.log(result);
+        res.send(result);
+    })
+    // res.end("username updated");
 });
 
 
 // query to delete song
 app.post('/deleteSong', (req, res) => {
     var id = req.body.id;
-    var querystring = "DELETE FROM songs WHERE song_id='" + id + "'";
-    console.log(querystring);
-    connection.query(  querystring, (error, results, fields) => {
-        if (error) {
-            return console.error(error.message);
-        }
-        console.log(results);
-    });
-    res.end("song deleted");
+    // var querystring = "DELETE FROM songs WHERE song_id='" + id + "'";
+    // console.log(querystring);
+    // connection.query(  querystring, (error, results, fields) => {
+    //     if (error) {
+    //         return console.error(error.message);
+    //     }
+    //     console.log(results);
+    // });
+    // res.end("song deleted");
+    sequelize.query("DELETE FROM songs WHERE song_id=?", 
+    {
+        replacements: [id],
+        type: sequelize.QueryTypes.DELETE
+    })
+    .then(function(result) {
+        console.log(result);
+        res.send(result);
+    })
 });
 
 // query to delete book mood relationships
@@ -432,13 +506,15 @@ app.get("/login", (req, res) => {
     // var querystring = "SELECT * FROM users WHERE username='" + username + "' AND password='" + password + "'";
     // console.log(querystring);
     //let usermatchquery = querystring;
-    sequelize.query("SELECT * FROM users WHERE username=? AND password=?", [username, password], (error, results, fields) => {
-        if (error) {
-            return console.error(error.message);
-        }
-        console.log(results);
-        res.send(results);
-    });
+    sequelize.query("SELECT * FROM users WHERE username=? AND password=?", 
+    {
+        replacements: [username, password],
+        type: sequelize.QueryTypes.SELECT
+    })
+    .then(function(result) {
+        console.log(result);
+        res.send(result);
+    })
 });
 
 
