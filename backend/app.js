@@ -1430,4 +1430,83 @@ app.get("/getNumFavMovies", (req, res) => {
     });
 });
 
+
+// query to get movies with max associated moods
+app.get("/getMoviesWMaxMoods", (req, res) => {
+    let query = "SELECT m.movie_title FROM movies m JOIN moviemoods mm ON m.movie_id=mm.movie_id GROUP BY mm.movie_id HAVING COUNT(mm.mood_id) = (SELECT MAX(sub.cnt) FROM  (SELECT COUNT(mood_id) AS cnt FROM moviemoods GROUP BY movie_id) sub)";
+    connection.query(query, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
+
+// query to get movies with min associated moods
+app.get("/getMoviesWMinMoods", (req, res) => {
+    let query = "SELECT m.movie_title FROM movies m JOIN moviemoods mm ON m.movie_id=mm.movie_id GROUP BY mm.movie_id HAVING COUNT(mm.mood_id) = (SELECT MIN(sub.cnt) FROM  (SELECT COUNT(mood_id) AS cnt FROM moviemoods GROUP BY movie_id) sub)";
+    connection.query(query, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
+
+// query to get books with max associated moods
+app.get("/getBooksWMaxMoods", (req, res) => {
+    let query = "SELECT b.book_title FROM books b JOIN bookmoods bm ON b.book_id=bm.book_id GROUP BY bm.book_id HAVING COUNT(bm.mood_id) = (SELECT MAX(sub.cnt) FROM  (SELECT COUNT(mood_id) AS cnt FROM bookmoods GROUP BY book_id) sub)";
+    connection.query(query, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
+
+// query to get books with min associated moods
+app.get("/getBooksWMinMoods", (req, res) => {
+    let query = "SELECT b.book_title FROM books b JOIN bookmoods bm ON b.book_id=bm.book_id GROUP BY bm.book_id HAVING COUNT(bm.mood_id) = (SELECT MIN(sub.cnt) FROM  (SELECT COUNT(mood_id) AS cnt FROM bookmoods GROUP BY book_id) sub)";
+    connection.query(query, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
+
+// query to get songs with max associated moods
+app.get("/getSongsWMaxMoods", (req, res) => {
+    let query = "SELECT s.song_title FROM songs s JOIN songmoods sm ON s.song_id=sm.song_id GROUP BY sm.song_id HAVING COUNT(sm.mood_id) = (SELECT MAX(sub.cnt) FROM  (SELECT COUNT(mood_id) AS cnt FROM songmoods GROUP BY song_id) sub)";
+    connection.query(query, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
+
+// query to get songs with min associated moods
+app.get("/getSongsWMinMoods", (req, res) => {
+    let query = "SELECT s.song_title FROM songs s JOIN songmoods sm ON s.song_id=sm.song_id GROUP BY sm.song_id HAVING COUNT(sm.mood_id) = (SELECT MIN(sub.cnt) FROM  (SELECT COUNT(mood_id) AS cnt FROM songmoods GROUP BY song_id) sub)";
+    connection.query(query, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
+
 app.listen(port, () => console.log(`app listening on port ${port}`));

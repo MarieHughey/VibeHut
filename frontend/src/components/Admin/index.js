@@ -6,6 +6,7 @@ import AddMood from './addmood.js';
 import DeleteMood from './deletemood.js';
 import DeleteSong from './deletesong.js';
 import AdminReport from './adminReport';
+import MoodAssociations from './moodassociations.js';
 
 const admin = () => {
 
@@ -29,6 +30,9 @@ const admin = () => {
 
     <h4>Add a Mood!</h4>
     <AddMood/>
+
+    <h4>View Mood Associations</h4>
+    <MoodAssociations/>
 
     <h4>See Report</h4>
     <AdminReport/>
