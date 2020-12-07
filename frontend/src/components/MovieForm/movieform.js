@@ -162,20 +162,10 @@ class AddMovie extends Component {
 
             // get the id to assign by looking at current length of songs
             var newid = 0;
-            axios.get("/getMovies").then(response => {
-                const listItemsAll = response.data.map((d) => <li key={d.movie_title}>{d.movie_title} <i>by {d.producer} </i></li>);
-                console.log(listItemsAll.length);
-                newid = listItemsAll.length + 1;
-
-                // now add the song to the songs database
-                axios.post("/addMovie", {
-                    movietitle: movietitle,
-                    producer: pro,
-                    yearReleased: yearreleased,
-                    movieid: newid
-                }).then(response => {
-                    console.log("added movie");
-                });
+            axios.get("/getMaxMovieId").then(response => {
+                var listItemsAll = response.data[0].movie_id;
+                console.log(listItemsAll);
+                var newid = listItemsAll + 1;
                 
                 // get the mood ids for the mood names
                 var moodIds = [];
@@ -184,18 +174,19 @@ class AddMovie extends Component {
                         moodIds.push(response.data[i].mood_id);
                     }
                     console.log(moodIds);
-                    
-                    // then add the song moods to the songmoods database
-                    axios.post("/addMovieMoods", {
+
+                    // now add the movie to the movies database
+                    axios.post("/addMovie", {
+                        movietitle: movietitle,
+                        producer: pro,
+                        yearReleased: yearreleased,
                         movieid: newid,
                         moodidlist: moodIds
                     }).then(response => {
-                        console.log("added movie moods");
-                        // go back to non-form page
+                        console.log("added movie");
                         window.location.href = ROUTES.USERDASHBOARD;
-                    })
+                    });
                 });
-                
             });
         });
     }

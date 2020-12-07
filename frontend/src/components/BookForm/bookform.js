@@ -154,19 +154,11 @@ class AddBook extends Component {
 
             // get the id to assign by looking at current length of songs
             var newid = 0;
-            axios.get("/getBooks").then(response => {
-                const listItemsAll = response.data.map((d) => <li key={d.book_title}>{d.book_title} <i>by {d.author} </i></li>);
-                console.log(listItemsAll.length);
-                newid = listItemsAll.length + 1;
+            axios.get("/getMaxBookId").then(response => {
+                var listItemsAll = response.data[0].book_id;
+                console.log(listItemsAll);
+                var newid = listItemsAll + 1;
 
-                // now add the song to the songs database
-                axios.post("/addBook", {
-                    booktitle: booktitle,
-                    author: author,
-                    bookid: newid
-                }).then(response => {
-                    console.log("added book");
-                });
                 // get the mood ids for the mood names
                 var moodIds = [];
                 axios.get("/getMoodIds", { params: {moodnames: checkedMoods}}).then(response => {
@@ -174,16 +166,17 @@ class AddBook extends Component {
                         moodIds.push(response.data[i].mood_id);
                     }
                     console.log(moodIds);
-                    
-                    // then add the song moods to the songmoods database
-                    axios.post("/addBookMoods", {
+
+                    // now add the book to the books database
+                    axios.post("/addBook", {
+                        booktitle: booktitle,
+                        author: author,
                         bookid: newid,
                         moodidlist: moodIds
                     }).then(response => {
-                        console.log("added book moods");
-                        // go back to non-form page
+                        console.log("added book");
                         window.location.href = ROUTES.USERDASHBOARD;
-                    })
+                    });
                 });
             });
         });

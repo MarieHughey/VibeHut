@@ -37,19 +37,6 @@ class Pop extends Component{
 
     keyPressUser(e){
         axios.post("/DeleteAccount", { id: localStorage.getItem('currId')}).then(response => {
-            axios.post("/DeleteAccountBooks", { id: localStorage.getItem('currId')}).then(response => {
-                console.log("favebooks deleted");
-            });
-            axios.post("/DeleteAccountMovies", { id: localStorage.getItem('currId')}).then(response => {
-                console.log("favemovies deleted");
-            });
-            axios.post("/DeleteAccountPlaylistSongs", { id: localStorage.getItem('currId')}).then(response => {
-                console.log("playlistsongs deleted");
-            });
-            axios.post("/DeleteAccountSongs", { id: localStorage.getItem('currId')}).then(response => {
-                console.log("playlists deleted");
-            });
-        
             console.log("account deleted");
             localStorage.setItem('currUser', "");
             localStorage.setItem('currId', "");

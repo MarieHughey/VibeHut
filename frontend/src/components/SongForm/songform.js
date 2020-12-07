@@ -167,15 +167,6 @@ class AddSong extends Component {
                 console.log(listItemsAll);
                 var newid = listItemsAll + 1;
 
-                // now add the song to the songs database
-                axios.post("/addSong", {
-                    songtitle: songtitle,
-                    artist: artist,
-                    albumname: albumtitle,
-                    songid: newid
-                }).then(response => {
-                    console.log("added song");
-                });
                 // get the mood ids for the mood names
                 var moodIds = [];
                 axios.get("/getMoodIds", { params: {moodnames: checkedMoods}}).then(response => {
@@ -183,16 +174,18 @@ class AddSong extends Component {
                         moodIds.push(response.data[i].mood_id);
                     }
                     console.log(moodIds);
-                    
-                    // then add the song moods to the songmoods database
-                    axios.post("/addSongMoods", {
+                
+                    // now add the song to the songs database
+                    axios.post("/addSong", {
+                        songtitle: songtitle,
+                        artist: artist,
+                        albumname: albumtitle,
                         songid: newid,
                         moodidlist: moodIds
                     }).then(response => {
-                        console.log("added song moods");
-                        // go back to non-form page
-                        window.location.href = ROUTES.ADD_NEW_SONG;
-                    })
+                        console.log("added song");
+                        window.location.href = ROUTES.USERDASHBOARD;
+                    });
                 });
             });
         });

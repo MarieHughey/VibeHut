@@ -14,7 +14,7 @@ class Logout extends Component {
             localStorage.setItem('currId', "");
 
             // and then also route to the dashboard
-            window.location.href = ROUTES.LOGIN;
+            window.location.href = ROUTES.LANDING;
     
     }
 

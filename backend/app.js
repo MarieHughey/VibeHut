@@ -86,6 +86,30 @@ app.get("/getMaxSongId", (req, res) => {
     });
 });
 
+// query to return max movie id
+app.get("/getMaxMovieId", (req, res) => {
+    let query = `SELECT MAX(movie_id) as movie_id FROM movies`;
+    connection.query(query, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
+// query to return max book id
+app.get("/getMaxBookId", (req, res) => {
+    let query = `SELECT MAX(book_id) as book_id FROM books`;
+    connection.query(query, (error, results, fields) => {
+        if (error) {
+            return console.error(error.message);
+        }
+        console.log(results);
+        res.send(results);
+    });
+});
+
 
 // query to see if exact user exists in database
 app.get("/checkUserExists", (req, res) => {
@@ -268,8 +292,11 @@ app.post('/deleteMoodSongs', (req, res) => {
 // query to delete user from the users table
 app.post('/DeleteAccount', (req, res) => {
     var id = req.body.id;
-    var querystring = "DELETE FROM users WHERE userId='" + id + "'";
-    console.log(querystring);
+    var queryusers = "DELETE FROM users WHERE userId='" + id + "'";
+    var queryfavebooks = "DELETE FROM favebooks WHERE user_id='" + id + "'";
+    var queryfavemovies = "DELETE FROM favemovies WHERE user_id='" + id + "'";
+    var queryplaylists = "DELETE FROM playlists WHERE user_id='" + id + "'";
+    var queryplaylistsongs = "DELETE playlistsongs FROM playlistsongs INNER JOIN playlists ON playlists.playlist_id = playlistsongs.playlist_id WHERE playlists.user_id = '" + id + "'";
     var q = "SET TRANSACTION LEVEL READ COMMITTED;";
     connection.query(  q, (error, results, fields) => {
         if (error) {
@@ -278,160 +305,70 @@ app.post('/DeleteAccount', (req, res) => {
     });
     connection.beginTransaction(function(err) {
         if (err) { throw err; }
-        console.log(querystring);
-        connection.query(  querystring, (error, results, fields) => {
+        // delete user
+        connection.query(queryusers, (error, results, fields) => {
             if (error) {
                 connection.rollback(function() {
                     throw error;
                 });
             }
-            connection.commit(function(err) {
-                if (err) { 
-                    connection.rollback(function() {
-                    throw err;
-                });
-                }
-                console.log('Transaction Complete.');
-            });
             console.log(results);
         });
+
+        // delete fave books
+        connection.query(queryfavebooks, (error, results, fields) => {
+            if (error) {
+                connection.rollback(function() {
+                    throw error;
+                });
+            }
+            console.log(results);
+        });
+
+
+        // delete fave movies
+        connection.query(queryfavemovies, (error, results, fields) => {
+            if (error) {
+                connection.rollback(function() {
+                    throw error;
+                });
+            }
+            console.log(results);
+        });
+
+        // delete playlists songs
+        connection.query(queryplaylistsongs, (error, results, fields) => {
+            if (error) {
+                connection.rollback(function() {
+                    throw error;
+                });
+            }
+            console.log(results);
+        
+            // delete playlists
+            connection.query(queryplaylists, (error, results, fields) => {
+                if (error) {
+                    connection.rollback(function() {
+                        throw error;
+                    });
+                }
+                console.log(results);
+            });
+        });
+
+
+        connection.commit(function(err) {
+            if (err) { 
+                connection.rollback(function() {
+                throw err;
+            });
+            }
+            console.log('Transaction Complete.');
+        });
+
     });
     res.end("account deleted");
 });
-
-// query to delete user from the favebooks table
-app.post('/DeleteAccountBooks', (req, res) => {
-    var id = req.body.id;
-    var querystring = "DELETE FROM favebooks WHERE user_id='" + id + "'";
-    console.log(querystring);
-    var q = "SET TRANSACTION LEVEL READ COMMITTED;";
-    connection.query(  q, (error, results, fields) => {
-        if (error) {
-            return console.error(error.message);
-        }
-    });
-    connection.beginTransaction(function(err) {
-        if (err) { throw err; }
-        console.log(querystring);
-        connection.query(  querystring, (error, results, fields) => {
-            if (error) {
-                connection.rollback(function() {
-                    throw error;
-                });
-            }
-            connection.commit(function(err) {
-                if (err) { 
-                    connection.rollback(function() {
-                    throw err;
-                });
-                }
-                console.log('Transaction Complete.');
-            });
-            console.log(results);
-        });
-    });
-    res.end("favebooks deleted");
-});
-
-// query to delete user from the favemovies table
-app.post('/DeleteAccountMovies', (req, res) => {
-    var id = req.body.id;
-    var querystring = "DELETE FROM favemovies WHERE user_id='" + id + "'";
-    console.log(querystring);
-    connection.query(  q, (error, results, fields) => {
-        if (error) {
-            return console.error(error.message);
-        }
-    });
-    connection.beginTransaction(function(err) {
-        if (err) { throw err; }
-        console.log(querystring);
-        connection.query(  querystring, (error, results, fields) => {
-            if (error) {
-                connection.rollback(function() {
-                    throw error;
-                });
-            }
-            connection.commit(function(err) {
-                if (err) { 
-                    connection.rollback(function() {
-                    throw err;
-                });
-                }
-                console.log('Transaction Complete.');
-            });
-            console.log(results);
-        });
-    });
-    res.end("favemovies deleted");
-});
-
-// query to delete user from the playlists table
-app.post('/DeleteAccountSongs', (req, res) => {
-    var id = req.body.id;
-    var querystring = "DELETE FROM playlists WHERE user_id='" + id + "'";
-    console.log(querystring);
-    connection.query(  q, (error, results, fields) => {
-        if (error) {
-            return console.error(error.message);
-        }
-    });
-    connection.beginTransaction(function(err) {
-        if (err) { throw err; }
-        console.log(querystring);
-        connection.query(  querystring, (error, results, fields) => {
-            if (error) {
-                connection.rollback(function() {
-                    throw error;
-                });
-            }
-            connection.commit(function(err) {
-                if (err) { 
-                    connection.rollback(function() {
-                    throw err;
-                });
-                }
-                console.log('Transaction Complete.');
-            });
-            console.log(results);
-        });
-    });
-    res.end("playlists deleted");
-});
-
-// query to delete user from the playlists table
-app.post('/DeleteAccountPlaylistSongs', (req, res) => {
-    var id = req.body.id;
-    var querystring = "Delete playlistsongs from playlistsongs inner join playlists on playlists.playlist_id = playlistsongs.playlist_id where playlists.user_id = '" + id + "'";
-    console.log(querystring);
-    connection.query(  q, (error, results, fields) => {
-        if (error) {
-            return console.error(error.message);
-        }
-    });
-    connection.beginTransaction(function(err) {
-        if (err) { throw err; }
-        console.log(querystring);
-        connection.query(  querystring, (error, results, fields) => {
-            if (error) {
-                connection.rollback(function() {
-                    throw error;
-                });
-            }
-            connection.commit(function(err) {
-                if (err) { 
-                    connection.rollback(function() {
-                    throw err;
-                });
-                }
-                console.log('Transaction Complete.');
-            });
-            console.log(results);
-        });
-    });
-    res.end("playlistsongs deleted");
-});
-
 
 
 
@@ -706,6 +643,7 @@ app.post('/addSong',(req, res) => {
     var artist = req.body.artist;
     var album_name = req.body.albumname;
     var song_id = req.body.songid;
+    var mood_id_list = req.body.moodidlist;
     console.log(req.body);
     var q = "SET TRANSACTION LEVEL READ COMMITTED;";
     connection.query(  q, (error, results, fields) => {
@@ -713,68 +651,46 @@ app.post('/addSong',(req, res) => {
             return console.error(error.message);
         }
     });
-    var querystring = "INSERT INTO songs (song_id, song_title, artist, album_name) VALUES (" + song_id + ", '" + song_title + "', '" + artist + "', '" + album_name + "')";
+    var querysongs = "INSERT INTO songs (song_id, song_title, artist, album_name) VALUES (" + song_id + ", '" + song_title + "', '" + artist + "', '" + album_name + "')";
     connection.beginTransaction(function(err) {
         if (err) { throw err; }
-        console.log(querystring);
-        connection.query(  querystring, (error, results, fields) => {
+        console.log(querysongs);
+        connection.query(querysongs, (error, results, fields) => {
             if (error) {
                 connection.rollback(function() {
                     throw error;
                 });
             }
-            connection.commit(function(err) {
-                if (err) { 
-                    connection.rollback(function() {
-                    throw err;
-                });
-                }
-                console.log('Transaction Complete.');
-            });
             console.log(results);
+
+            console.log("doing this");
+            console.log(mood_id_list.length + " - length");
+            for (let i = 0; i < mood_id_list.length; i++) {
+                console.log(mood_id_list[i]);
+                var querystring = "INSERT INTO songmoods (song_id, mood_id) VALUES (" + song_id + ", " + mood_id_list[i] + ")";
+                console.log(querystring);
+                connection.query(querystring, (error, results, fields) => {
+                    if (error) {
+                        connection.rollback(function() {
+                            throw error;
+                        });
+                    }
+                });
+            }
+
+            console.log("here");
+        });
+
+        connection.commit(function(err) {
+            if (err) { 
+                connection.rollback(function() {
+                throw err;
+            });
+            }
+            console.log('Transaction Complete.');
         });
     });
     res.end("added song");
-});
-
-// query to add song moods
-app.post('/addSongMoods', (req, res) => {
-    var song_id = req.body.songid;
-    var mood_id_list = req.body.moodidlist;
-
-    console.log(song_id);
-    console.log(mood_id_list);
-
-    var q = "SET TRANSACTION LEVEL READ COMMITTED;";
-    connection.query(  q, (error, results, fields) => {
-        if (error) {
-            return console.error(error.message);
-        }
-    });
-
-    connection.beginTransaction(function(err) {
-        if (err) { throw err; }
-        for (let i = 0; i < mood_id_list.length; i++) {
-            console.log(mood_id_list[i]);
-            var querystring = "INSERT INTO songmoods (song_id, mood_id) VALUES (" + song_id + ", " + mood_id_list[i] + ")";
-            connection.query(  querystring, (error, results, fields) => {
-                if (error) {
-                    connection.rollback(function() {
-                        throw error;
-                    });
-                }
-            });
-        }
-    });
-    connection.commit(function(err) {
-        if (err) { 
-            connection.rollback(function() {
-            throw err;
-        });
-        }
-        console.log('Transaction Complete.');
-    });
-    res.end("added song moods");
 });
 
 
@@ -784,6 +700,7 @@ app.post('/addMovie',(req, res) => {
     var producer = req.body.producer;
     var year_released = req.body.yearReleased;
     var movie_id = req.body.movieid;
+    var mood_id_list = req.body.moodidlist;
     console.log(req.body);
     var q = "SET TRANSACTION LEVEL READ COMMITTED;";
     connection.query(  q, (error, results, fields) => {
@@ -791,68 +708,41 @@ app.post('/addMovie',(req, res) => {
             return console.error(error.message);
         }
     });
-    var querystring = "INSERT INTO movies (movie_title, year_released, producer, movie_id) VALUES ('" + movie_title + "', '" + year_released + "', '" + producer + "', '" + movie_id + "')";
+    var querymovie = "INSERT INTO movies (movie_title, year_released, producer, movie_id) VALUES ('" + movie_title + "', '" + year_released + "', '" + producer + "', '" + movie_id + "')";
     connection.beginTransaction(function(err) {
         if (err) { throw err; }
-        console.log(querystring);
-        connection.query(  querystring, (error, results, fields) => {
+        console.log(querymovie);
+        connection.query(querymovie, (error, results, fields) => {
             if (error) {
                 connection.rollback(function() {
                     throw error;
                 });
             }
-            connection.commit(function(err) {
-                if (err) { 
-                    connection.rollback(function() {
-                    throw err;
-                });
-                }
-                console.log('Transaction Complete.');
-            });
             console.log(results);
+
+            for (let i = 0; i < mood_id_list.length; i++) {
+                console.log(mood_id_list[i]);
+                var querystring = "INSERT INTO moviemoods (movie_id, mood_id) VALUES (" + movie_id + ", " + mood_id_list[i] + ")";
+                connection.query(  querystring, (error, results, fields) => {
+                    if (error) {
+                        connection.rollback(function() {
+                            throw error;
+                        });
+                    }
+                });
+            }
+        });
+
+        connection.commit(function(err) {
+            if (err) { 
+                connection.rollback(function() {
+                throw err;
+            });
+            }
+            console.log('Transaction Complete.');
         });
     });
     res.end("added movie");
-});
-
-// query to add movie moods
-app.post('/addMovieMoods', (req, res) => {
-    var movie_id = req.body.movieid;
-    var mood_id_list = req.body.moodidlist;
-
-    console.log(movie_id);
-    console.log(mood_id_list);
-
-    var q = "SET TRANSACTION LEVEL READ COMMITTED;";
-    connection.query(  q, (error, results, fields) => {
-        if (error) {
-            return console.error(error.message);
-        }
-    });
-
-    connection.beginTransaction(function(err) {
-        if (err) { throw err; }
-        for (let i = 0; i < mood_id_list.length; i++) {
-            console.log(mood_id_list[i]);
-            var querystring = "INSERT INTO moviemoods (movie_id, mood_id) VALUES (" + movie_id + ", " + mood_id_list[i] + ")";
-            connection.query(  querystring, (error, results, fields) => {
-                if (error) {
-                    connection.rollback(function() {
-                        throw error;
-                    });
-                }
-            });
-        }
-    });
-    connection.commit(function(err) {
-        if (err) { 
-            connection.rollback(function() {
-            throw err;
-        });
-        }
-        console.log('Transaction Complete.');
-    });
-    res.end("added movie moods");
 });
 
 
@@ -868,69 +758,43 @@ app.post('/addBook',(req, res) => {
             return console.error(error.message);
         }
     });
-    var querystring = "INSERT INTO books (book_title, author, book_id) VALUES ('" + book_title + "', '" + author + "', '" + book_id + "')";
+    var querybook = "INSERT INTO books (book_title, author, book_id) VALUES ('" + book_title + "', '" + author + "', '" + book_id + "')";
     connection.beginTransaction(function(err) {
         if (err) { throw err; }
-        console.log(querystring);
-        connection.query(  querystring, (error, results, fields) => {
+        console.log(querymovie);
+        connection.query(querybook, (error, results, fields) => {
             if (error) {
                 connection.rollback(function() {
                     throw error;
                 });
             }
-            connection.commit(function(err) {
-                if (err) { 
-                    connection.rollback(function() {
-                    throw err;
-                });
-                }
-                console.log('Transaction Complete.');
-            });
             console.log(results);
+            
+            for (let i = 0; i < mood_id_list.length; i++) {
+                console.log(mood_id_list[i]);
+                var querystring = "INSERT INTO bookmoods (book_id, mood_id) VALUES (" + book_id + ", " + mood_id_list[i] + ")";
+                connection.query(  querystring, (error, results, fields) => {
+                    if (error) {
+                        connection.rollback(function() {
+                            throw error;
+                        });
+                    }
+                });
+            }
+        });
+
+        connection.commit(function(err) {
+            if (err) { 
+                connection.rollback(function() {
+                throw err;
+            });
+            }
+            console.log('Transaction Complete.');
         });
     });
     res.end("added book");
 });
 
-// query to add book moods
-app.post('/addBookMoods', (req, res) => {
-    var book_id = req.body.bookid;
-    var mood_id_list = req.body.moodidlist;
-
-    console.log(book_id);
-    console.log(mood_id_list);
-
-    var q = "SET TRANSACTION LEVEL READ COMMITTED;";
-    connection.query(  q, (error, results, fields) => {
-        if (error) {
-            return console.error(error.message);
-        }
-    });
-
-    connection.beginTransaction(function(err) {
-        if (err) { throw err; }
-        for (let i = 0; i < mood_id_list.length; i++) {
-            console.log(mood_id_list[i]);
-            var querystring = "INSERT INTO bookmoods (book_id, mood_id) VALUES (" + book_id + ", " + mood_id_list[i] + ")";
-            connection.query(  querystring, (error, results, fields) => {
-                if (error) {
-                    connection.rollback(function() {
-                        throw error;
-                    });
-                }
-            });
-        }
-    });
-    connection.commit(function(err) {
-        if (err) { 
-            connection.rollback(function() {
-            throw err;
-        });
-        }
-        console.log('Transaction Complete.');
-    });
-    res.end("added book moods");
-})
 
 // query to get song id from mood name
 app.get('/getSongId', (req, res) => {
