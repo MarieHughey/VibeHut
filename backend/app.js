@@ -960,15 +960,25 @@ app.get('/getMovieId', (req, res) => {
 app.get('/getBookId', (req, res) => {
     var booktitle = req.query.booktitle;
 
-    var querystring = "SELECT book_id FROM books WHERE book_title='" + booktitle + "'";
-    console.log(querystring);
-    connection.query(  querystring, (error, results, fields) => {
-        if (error) {
-            return console.error(error.message);
-        }
-        console.log(results);
-        res.send(results);
-    });
+    // var querystring = "SELECT book_id FROM books WHERE book_title='" + booktitle + "'";
+    // console.log(querystring);
+    // connection.query(  querystring, (error, results, fields) => {
+    //     if (error) {
+    //         return console.error(error.message);
+    //     }
+    //     console.log(results);
+    //     res.send(results);
+    // });
+    sequelize.query("SELECT book_id FROM books WHERE book_title=?", 
+    {
+        replacements: [booktitle],
+        type: sequelize.QueryTypes.SELECT
+    })
+    .then(function(result) {
+        console.log(result);
+        res.send(result);
+    })
+    
 })
 
 
@@ -1201,14 +1211,23 @@ app.post("/removefavebook", (req, res) => {
 // query to get playlists for user
 app.get("/getPlaylistsForUser", (req, res) => {
     var user_id = req.query.userid;
-    var query = "SELECT * FROM playlists p WHERE user_id=" + user_id ;
-    connection.query(query, (error, results, fields) => {
-        if (error) {
-            return console.error(error.message);
-        }
-        console.log(results);
-        res.send(results);
-    });
+    // var query = "SELECT * FROM playlists p WHERE user_id=" + user_id ;
+    // connection.query(query, (error, results, fields) => {
+    //     if (error) {
+    //         return console.error(error.message);
+    //     }
+    //     console.log(results);
+    //     res.send(results);
+    // });
+    sequelize.query("SELECT * FROM playlists p WHERE user_id=?", 
+    {
+        replacements: [user_id],
+        type: sequelize.QueryTypes.SELECT
+    })
+    .then(function(result) {
+        console.log(result);
+        res.send(result);
+    })
 });
 
 // query to see if exact user exists in database
@@ -1244,15 +1263,24 @@ app.post('/makeAdmin', (req, res) => {
 // query to get songs for a playlist
 app.get("/getSavedPlaylistSongs", (req, res) => {
     var playlistId = req.query.playlistId;
-    var querystring = "SELECT DISTINCT ps.song_id, s.song_title, s.artist FROM playlistsongs ps JOIN songs s ON ps.song_id=s.song_id WHERE ps.playlist_id=" + playlistId;
-    let playlistquery = querystring;
-    connection.query(playlistquery, (error, results, fields) => {
-        if (error) {
-            return console.error(error.message);
-        }
-        console.log(results);
-        res.send(results);
-    });
+    // var querystring = "SELECT DISTINCT ps.song_id, s.song_title, s.artist FROM playlistsongs ps JOIN songs s ON ps.song_id=s.song_id WHERE ps.playlist_id=" + playlistId;
+    // let playlistquery = querystring;
+    // connection.query(playlistquery, (error, results, fields) => {
+    //     if (error) {
+    //         return console.error(error.message);
+    //     }
+    //     console.log(results);
+    //     res.send(results);
+    // });
+    sequelize.query("SELECT DISTINCT ps.song_id, s.song_title, s.artist FROM playlistsongs ps JOIN songs s ON ps.song_id=s.song_id WHERE ps.playlist_id=?", 
+    {
+        replacements: [playlistId],
+        type: sequelize.QueryTypes.SELECT
+    })
+    .then(function(result) {
+        console.log(result);
+        res.send(result);
+    })
 });
 
 // query to delete playlist
@@ -1282,14 +1310,23 @@ app.post("/deletePlaylist", (req, res) => {
 // query to get songs by name
 app.get("/getSongsByName", (req, res) => {
     var songTitle = req.query.songTitle;
-    let songquery = "SELECT * FROM songs WHERE song_title LIKE '%" + songTitle + "%'";
-    connection.query(songquery, (error, results, fields) => {
-        if (error) {
-            return console.error(error.message);
-        }
-        console.log(results);
-        res.send(results);
-    });
+    // let songquery = "SELECT * FROM songs WHERE song_title LIKE '%" + songTitle + "%'";
+    // connection.query(songquery, (error, results, fields) => {
+    //     if (error) {
+    //         return console.error(error.message);
+    //     }
+    //     console.log(results);
+    //     res.send(results);
+    // });
+    sequelize.query("SELECT * FROM songs WHERE song_title LIKE %?%", 
+    {
+        replacements: [songTitle],
+        type: sequelize.QueryTypes.SELECT
+    })
+    .then(function(result) {
+        console.log(result);
+        res.send(result);
+    })
 });
 
 // query to add song to playlist
