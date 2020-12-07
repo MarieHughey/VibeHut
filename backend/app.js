@@ -5,6 +5,15 @@ const port = 5000;
 
 let mysql = require('mysql');
 
+const { Sequelize } = require('sequelize');
+const sequelize = new Sequelize({
+    host: "34.121.26.227",
+    username: "root",
+    database: "vibehut",
+    password: "cs348vibehut",
+    dialect: 'mysql'
+});
+
 let connection = mysql.createConnection({
     host: "34.121.26.227",
     user: "root",
@@ -29,8 +38,31 @@ connection.connect(function(err) {
     console.log('Connected to the VibeHut server.');
   });
 
+sequelize
+  .authenticate()
+  .then(function(err) {
+    console.log('Connection has been established successfully.');
+  })
+  .catch(function (err) {
+    console.log('Unable to connect to the database:', err);
+  });
 
 //app.get("/test", (req, res) => res.send("testing backend"));
+
+// define models here
+var users = sequelize.define('users', {
+    userId: {type: Sequelize.INTEGER, primaryKey: true},
+    username: Sequelize.STRING,
+    email: Sequelize.INTEGER,
+    password: Sequelize.STRING,
+    isAdmin: Sequelize.INTEGER
+}, {
+    timestamps: false
+})
+
+
+
+// INSERT EXAMPLE
 
 // query to create a user account
 app.post('/createAccount',(req, res) => {
@@ -38,28 +70,48 @@ app.post('/createAccount',(req, res) => {
     var email = req.body.email;
     var password = req.body.password;
     var userId = req.body.userId;
-    console.log(req.body);
+    console.log(username);
     //var querystring = "INSERT INTO users (userId, username, email, password, isAdmin) VALUES (" + userId + ", '" + username + "', '" + email + "', '" + password + "', 0)";
-    connection.query(  "INSERT INTO users (userId, username, email, password, isAdmin) VALUES (?, ?, ?, ?, 0)", [userId, username, email, password], (error, results, fields) => {
-        if (error) {
-            return console.error(error.message);
+    // connection.query(  "INSERT INTO users (userId, username, email, password, isAdmin) VALUES (?, ?, ?, ?, 0)", [userId, username, email, password], (error, results, fields) => {
+    //     if (error) {
+    //         return console.error(error.message);
+    //     }
+    //     console.log(results);
+    // });
+    return users.create({
+        userId: userId,
+        username: username,
+        email: email,
+        password: password,
+        isAdmin: 0
+    }).then(function (users) {
+        if (users) {
+            res.send(users);
+        } else {
+            res.status(400).send('Error in creating user');
         }
-        console.log(results);
     });
-    res.end("added user");
+    // res.end("added user");
 });
 
 
+// SELECT EXAMPLE
+
 // query to return max user id
 app.get("/getMaxId", (req, res) => {
-    let userquery = `SELECT MAX(userId) as userId FROM users`;
-    connection.query(userquery, (error, results, fields) => {
-        if (error) {
-            return console.error(error.message);
-        }
-        console.log(results);
-        res.send(results);
-    });
+    // let userquery = `SELECT MAX(userId) as userId FROM users`;
+    // connection.query(userquery, (error, results, fields) => {
+    //     if (error) {
+    //         return console.error(error.message);
+    //     }
+    //     console.log(results);
+    //     res.send(results);
+    // });
+    sequelize.query("SELECT MAX(userId) as userId FROM users", { type: sequelize.QueryTypes.SELECT })
+    .then(function(result) {
+        res.send(result);
+    })
+    
 });
 
 // query to return max mood id
@@ -114,9 +166,10 @@ app.get("/getMaxBookId", (req, res) => {
 // query to see if exact user exists in database
 app.get("/checkUserExists", (req, res) => {
     var username = req.query.username;
-    var querystring = "SELECT * FROM users WHERE username='" + username + "'";
-    console.log(querystring);
+    // var querystring = "SELECT * FROM users WHERE username='" + username + "'";
+    // console.log(querystring);
     //let usermatchquery = querystring;
+
     connection.query("SELECT * FROM users WHERE username=?", [username], (error, results, fields) => {
         if (error) {
             return console.error(error.message);
@@ -376,10 +429,10 @@ app.post('/DeleteAccount', (req, res) => {
 app.get("/login", (req, res) => {
     var username = req.query.username;
     var password = req.query.password;
-    var querystring = "SELECT * FROM users WHERE username='" + username + "' AND password='" + password + "'";
-    console.log(querystring);
+    // var querystring = "SELECT * FROM users WHERE username='" + username + "' AND password='" + password + "'";
+    // console.log(querystring);
     //let usermatchquery = querystring;
-    connection.query("SELECT * FROM users WHERE username=? AND password=?", [username, password], (error, results, fields) => {
+    sequelize.query("SELECT * FROM users WHERE username=? AND password=?", [username, password], (error, results, fields) => {
         if (error) {
             return console.error(error.message);
         }
