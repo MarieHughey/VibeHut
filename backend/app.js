@@ -60,6 +60,13 @@ var users = sequelize.define('users', {
     timestamps: false
 })
 
+var mood = sequelize.define('mood', {
+    mood_name: Sequelize.STRING,
+    mood_id: {type: Sequelize.INTEGER, primaryKey: true}
+}, {
+    timestamps: false
+})
+
 
 
 // INSERT EXAMPLE
@@ -755,14 +762,25 @@ app.post('/addMood',(req, res) => {
     var mood_name = req.body.moodname;
     var mood_id = req.body.moodid;
     console.log(req.body);
-    var querystring = "INSERT INTO moods (mood_name, mood_id) VALUES ('" + mood_name + "', " + mood_id + ")";
-    connection.query(  querystring, (error, results, fields) => {
-        if (error) {
-            return console.error(error.message);
+    // var querystring = "INSERT INTO moods (mood_name, mood_id) VALUES ('" + mood_name + "', " + mood_id + ")";
+    // connection.query(  querystring, (error, results, fields) => {
+    //     if (error) {
+    //         return console.error(error.message);
+    //     }
+    //     console.log(results);
+    // });
+    // res.end("added mood");
+
+    return mood.create({
+        mood_name: mood_name,
+        mood_id: mood_id,
+    }).then(function (mood) {
+        if (mood) {
+            res.send(mood);
+        } else {
+            res.status(400).send('Error in creating mood');
         }
-        console.log(results);
     });
-    res.end("added mood");
 });
 
 
